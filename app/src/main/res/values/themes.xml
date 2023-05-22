@@ -1,0 +1,10 @@
+<resources>
+    <style name="Base.Theme.Weather" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:textColor">@color/dark_primary</item>
+        <item name="colorPrimary">@color/light_primary</item>
+        <item name="colorSecondary">@color/dark_primary</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="Theme.Weather" parent="Base.Theme.Weather" />
+</resources>
