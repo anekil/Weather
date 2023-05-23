@@ -7,19 +7,19 @@
         android:id="@+id/city_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Cityname"
+        android:text=""
         android:textColor="?colorSecondary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/deleteBtn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <ImageButton
         android:id="@+id/deleteBtn"
-        android:backgroundTint="?colorSecondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="X"
+        android:backgroundTint="?colorPrimary"
+        android:src="@drawable/delete"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

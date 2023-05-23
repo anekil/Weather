@@ -13,7 +13,7 @@ import retrofit2.Response;
 
 public class ForecastActivity extends AppCompatActivity {
     String keyAPI = "a7801ab3bb1ab1a6e70f97bb4b575006";
-    String city = "Łódź,PL";
+    String city;
     String units;
 
     @Override
@@ -22,7 +22,8 @@ public class ForecastActivity extends AppCompatActivity {
         setContentView(R.layout.activity_forecast);
         loadingScreen();
         Bundle bundle = getIntent().getExtras();
-        boolean metricUnits = bundle.getBoolean("type");
+        city = bundle.getString("cityName");
+        boolean metricUnits = bundle.getBoolean("units");
         if(metricUnits)
             units = "metric";
         else

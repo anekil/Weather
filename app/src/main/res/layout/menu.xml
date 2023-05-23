@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Metric Units "
+        android:textColor="?colorSecondary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,29 +29,40 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageButton
+        android:id="@+id/favouriteBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="?colorPrimary"
+        android:src="@drawable/star"
+        app:layout_constraintBottom_toBottomOf="@+id/inputField"
+        app:layout_constraintEnd_toStartOf="@+id/inputField"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView" />
+
     <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Enter city name:"
         app:layout_constraintBottom_toTopOf="@+id/inputField"
         app:layout_constraintStart_toStartOf="@+id/inputField" />
 
-    <Button
+    <ImageButton
         android:id="@+id/nextBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="?colorSecondary"
-        android:text="→"
-        android:textSize="35sp"
+        android:backgroundTint="?colorPrimary"
+        android:src="@drawable/next"
         app:layout_constraintBottom_toBottomOf="@+id/inputField"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/inputField"
-        app:layout_constraintTop_toTopOf="@+id/inputField" />
+        app:layout_constraintTop_toTopOf="@+id/textView" />
 
     <Space
         android:id="@+id/space"
         android:layout_width="match_parent"
-        android:layout_height="14dp"
+        android:layout_height="20dp"
         app:layout_constraintTop_toBottomOf="@+id/nextBtn"
         tools:layout_editor_absoluteX="30dp" />
 
