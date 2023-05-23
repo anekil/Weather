@@ -1,29 +1,15 @@
 package com.pam.weather;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ForecastActivity extends AppCompatActivity {
     String keyAPI = "a7801ab3bb1ab1a6e70f97bb4b575006";
@@ -34,6 +20,7 @@ public class ForecastActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forecast);
+        loadingScreen();
         Bundle bundle = getIntent().getExtras();
         boolean metricUnits = bundle.getBoolean("type");
         if(metricUnits)
@@ -41,6 +28,46 @@ public class ForecastActivity extends AppCompatActivity {
         else
             units = "imperial";
 
+        setupDetailsPager();
+        Thread callingAPI = new Thread(this::callAPI);
+        callingAPI.start();
+    }
+
+    private void callAPI() {
+        WeatherApiService apiService = RetrofitClient.getRetrofitInstance().create(WeatherApiService.class);
+        Call<WeatherResponse> call = apiService.getCurrentWeatherData(city, "4", units, keyAPI);
+        call.enqueue(new Callback<WeatherResponse>() {
+            @Override
+            public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
+                if (response.isSuccessful()) {
+                    WeatherResponse weatherResponse = response.body();
+                    if (weatherResponse != null) {
+                        updateForecast(weatherResponse);
+                        dataScreen();
+                    } else {
+                        errorScreen();
+                        TextView textView = findViewById(R.id.errorText);
+                        textView.setText(Integer.toString(response.code()));
+                    }
+
+                } else {
+                    errorScreen();
+                    TextView textView = findViewById(R.id.errorText);
+                    textView.setText(Integer.toString(response.code()));
+                    //Toast.makeText(MainActivity.this, "Fail to get the data..", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WeatherResponse> call, Throwable t) {
+                errorScreen();
+                TextView textView = findViewById(R.id.errorText);
+                textView.setText(t.getMessage());
+            }
+        });
+    }
+
+    private void setupDetailsPager() {
         ViewPager2 detailsPager = findViewById(R.id.detailsPager);
         DetailsAdapter adapter = new DetailsAdapter(getSupportFragmentManager(), getLifecycle());
         adapter.addFragment(new ForecastDetails1Fragment());
@@ -48,97 +75,133 @@ public class ForecastActivity extends AppCompatActivity {
         adapter.addFragment(new ForecastNextDaysFragment());
         detailsPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         detailsPager.setAdapter(adapter);
-
-        /*
-        WeatherTask task = new WeatherTask();
-        task.execute();*/
     }
 
-    void showInfo(Class<? extends Fragment> fragmentClass){
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.detailsPager, fragmentClass, null)
-                .setReorderingAllowed(true)
-                .addToBackStack("name")
-                .commit();
-    }
-
-    void loading(){
+    void loadingScreen(){
         findViewById(R.id.loader).setVisibility(View.VISIBLE);
         findViewById(R.id.mainContainer).setVisibility(View.GONE);
         findViewById(R.id.errorText).setVisibility(View.GONE);
     }
 
-    void showError(){
+    void errorScreen(){
         findViewById(R.id.loader).setVisibility(View.GONE);
         findViewById(R.id.errorText).setVisibility(View.VISIBLE);
     }
 
-    void updateCoord(JSONObject object) throws JSONException {
-        double lon = object.getDouble("lon");
-        double lat = object.getDouble("lat");
+    void dataScreen(){
+        findViewById(R.id.mainContainer).setVisibility(View.VISIBLE);
     }
 
-    void updateWeather(JSONObject object) throws JSONException {
-        String weatherDescription = object.getString("description");
-
-        TextView text = findViewById(R.id.status);
-        text.setText(weatherDescription.toUpperCase());
-    }
-
-    void updateMain(JSONObject object) throws JSONException {
-        String temp = object.getString("temp") + "℃";
-        String feelsLike = object.getString("feels_like") + "℃";
-        String tempMin = "Min Temp: " + object.getString("temp_min")+"°C";
-        String tempMax = "Max Temp: " + object.getString("temp_max")+"°C";
-        String pressure = object.getString("pressure");
-        String humidity = object.getString("humidity");
-
-        TextView text = findViewById(R.id.temp);
-        text.setText(temp);
+    void updateForecast(WeatherResponse weather) {
+        TextView text = findViewById(R.id.location);
+        text.setText(weather.name);
+        text = findViewById(R.id.updated_at);
+        text.setText((int) weather.dt);
+        text = findViewById(R.id.status);
+        text.setText(weather.weather.get(0).description);
+        text = findViewById(R.id.temp);
+        text.setText((int) weather.main.temp);
+        text = findViewById(R.id.feels_like);
+        text.setText((int) weather.main.feels_like);
         text = findViewById(R.id.minimal);
-        text.setText(tempMin);
+        text.setText((int) weather.main.temp_min);
         text = findViewById(R.id.maximal);
-        text.setText(tempMax);
-
+        text.setText((int) weather.main.temp_max);
+        text = findViewById(R.id.temp);
+        text.setText((int) weather.main.temp);
         text = findViewById(R.id.pressure);
-        text.setText(pressure);
+        text.setText((int) weather.main.pressure);
         text = findViewById(R.id.humidity);
-        text.setText(humidity);
-    }
-    void updateWind(JSONObject object) throws JSONException {
-        String windSpeed = object.getString("speed");
-
-        TextView text = findViewById(R.id.wind);
-        text.setText(windSpeed);
-    }
-    void updateSys(JSONObject object) throws JSONException {
-        long sunrise = object.getLong("sunrise");
-        long sunset = object.getLong("sunset");
-        //String address = object.getString("name")+", "+object.getString("country");
-
-        TextView text = findViewById(R.id.sunrise);
-        text.setText(new SimpleDateFormat("hh:mm a dd/MM/yyyy", Locale.ENGLISH).format(new Date(sunrise*1000)));
+        text.setText((int) weather.main.humidity);
+        text = findViewById(R.id.visibility);
+        text.setText((int) weather.visibility);
+        text = findViewById(R.id.wind);
+        text.setText((int) weather.wind.speed);
+        text = findViewById(R.id.sunrise);
+        text.setText((int) weather.sys.sunrise);
         text = findViewById(R.id.sunset);
-        text.setText(new SimpleDateFormat("hh:mm a dd/MM/yyyy", Locale.ENGLISH).format(new Date(sunset*1000)));
-        text = findViewById(R.id.location);
-        text.setText(city);
+        text.setText((int) weather.sys.sunset);
     }
 
 
+        /*TextView text = findViewById(R.id.status);
+        text.setText(weather.weather.toUpperCase());
+        text = findViewById(R.id.temp);
+        text.setText(temp);*/
+            /*
+            text = findViewById(R.id.minimal);
+            text.setText(tempMin);
+            text = findViewById(R.id.maximal);
+            text.setText(tempMax);
+
+            text = findViewById(R.id.pressure);
+            text.setText(pressure);
+            text = findViewById(R.id.humidity);
+            text.setText(humidity);
+            text = findViewById(R.id.sunrise);
+            text.setText(new SimpleDateFormat("hh:mm a dd/MM/yyyy", Locale.ENGLISH).format(new Date(sunrise*1000)));
+            text = findViewById(R.id.sunset);
+            text.setText(new SimpleDateFormat("hh:mm a dd/MM/yyyy", Locale.ENGLISH).format(new Date(sunset*1000)));
+            text = findViewById(R.id.location);
+            text.setText(city);
+            text = findViewById(R.id.wind);
+            text.setText(windSpeed);
+
+            String updateAtText = "Updated at: " + new SimpleDateFormat("hh:mm a dd/MM/yyyy", Locale.ENGLISH).format(new Date(dt*1000));
+            text = findViewById(R.id.updated_at);
+            text.setText(updateAtText);
+    }
+
+/*
     void updateForecast(JSONObject object)  {
         try {
-            updateCoord(object.getJSONObject("coord"));
-            updateWeather(object.getJSONArray("weather").getJSONObject(0));
-            updateMain(object.getJSONObject("main"));
-            updateWind(object.getJSONObject("wind"));
-            updateSys(object.getJSONObject("sys"));
-
+            JSONObject coord = object.getJSONObject("coord");
+            JSONObject weather = object.getJSONArray("weather").getJSONObject(0);
+            JSONObject main = object.getJSONObject("main");
+            JSONObject wind = object.getJSONObject("wind");
+            JSONObject sys = object.getJSONObject("sys");
             int visibility = object.getInt("visibility");
+            long dt = object.getLong("dt");
 
-            long updateAt = object.getLong("dt");
-            String updateAtText = "Updated at: " + new SimpleDateFormat("hh:mm a dd/MM/yyyy", Locale.ENGLISH).format(new Date(updateAt*1000));
-            TextView text = findViewById(R.id.updated_at);
+            String weatherDescription = weather.getString("description");
+            double lon = coord.getDouble("lon");
+            double lat = coord.getDouble("lat");
+            String temp = main.getString("temp") + "℃";
+            String feelsLike = main.getString("feels_like") + "℃";
+            String tempMin = "Min Temp: " + main.getString("temp_min")+"°C";
+            String tempMax = "Max Temp: " + main.getString("temp_max")+"°C";
+            String pressure = main.getString("pressure");
+            String humidity = main.getString("humidity");
+            long sunrise = sys.getLong("sunrise");
+            long sunset = sys.getLong("sunset");
+            String windSpeed = wind.getString("speed");
+            //String address = object.getString("name")+", "+object.getString("country");
+
+            TextView text = findViewById(R.id.status);
+            text.setText(weatherDescription.toUpperCase());
+            text = findViewById(R.id.temp);
+            text.setText(temp);
+            /*
+            text = findViewById(R.id.minimal);
+            text.setText(tempMin);
+            text = findViewById(R.id.maximal);
+            text.setText(tempMax);
+
+            text = findViewById(R.id.pressure);
+            text.setText(pressure);
+            text = findViewById(R.id.humidity);
+            text.setText(humidity);
+            text = findViewById(R.id.sunrise);
+            text.setText(new SimpleDateFormat("hh:mm a dd/MM/yyyy", Locale.ENGLISH).format(new Date(sunrise*1000)));
+            text = findViewById(R.id.sunset);
+            text.setText(new SimpleDateFormat("hh:mm a dd/MM/yyyy", Locale.ENGLISH).format(new Date(sunset*1000)));
+            text = findViewById(R.id.location);
+            text.setText(city);
+            text = findViewById(R.id.wind);
+            text.setText(windSpeed);
+
+            String updateAtText = "Updated at: " + new SimpleDateFormat("hh:mm a dd/MM/yyyy", Locale.ENGLISH).format(new Date(dt*1000));
+            text = findViewById(R.id.updated_at);
             text.setText(updateAtText);
         } catch (JSONException e) {
             showError();
@@ -153,44 +216,5 @@ public class ForecastActivity extends AppCompatActivity {
         return connected;
     }
 
-    class WeatherTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected void onPreExecute(){
-            super.onPreExecute();
-            loading();
-        }
-
-
-        @Override
-        protected String doInBackground(String... strings) {
-            String response;
-            try {
-                URL url = new URL("https://api.openweathermap.org/data/2.5/weather?q=" + city + "&cnt=4&appid=" + keyAPI + "&units=" + units);
-                URLConnection urlConn = url.openConnection();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-
-                StringBuilder stringBuilder = new StringBuilder();
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    stringBuilder.append(line);
-                }
-
-                response = stringBuilder.toString();
-            } catch (IOException e) {
-                response = null;
-            }
-            return response;
-        }
-
-        @Override
-        protected void onPostExecute(String result){
-            super.onPostExecute(result);
-            try {
-                JSONObject object = new JSONObject(result);
-                updateForecast(object);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
+    }*/
 }
