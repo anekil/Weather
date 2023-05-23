@@ -4,18 +4,18 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/row"
+        android:id="@+id/city_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Cityname"
         android:textColor="?colorSecondary"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button"
+        app:layout_constraintEnd_toStartOf="@+id/deleteBtn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/deleteBtn"
         android:backgroundTint="?colorSecondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

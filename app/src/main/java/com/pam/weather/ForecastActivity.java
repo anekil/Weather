@@ -1,9 +1,5 @@
 package com.pam.weather;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -11,6 +7,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager2.widget.ViewPager2;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,23 +28,27 @@ import java.util.Locale;
 public class ForecastActivity extends AppCompatActivity {
     String keyAPI = "a7801ab3bb1ab1a6e70f97bb4b575006";
     String city = "Łódź,PL";
-
+    String units;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forecast);
-/*
-        Button forecastBtn = findViewById(R.id.forecastBtn);
-        Button generalInfoBtn = findViewById(R.id.generalInfoBtn);
+        Bundle bundle = getIntent().getExtras();
+        boolean metricUnits = bundle.getBoolean("type");
+        if(metricUnits)
+            units = "metric";
+        else
+            units = "imperial";
 
-        forecastBtn.setOnClickListener((view) ->{
-           showInfo(ForecastFragment.class);
-        });
+        ViewPager2 detailsPager = findViewById(R.id.detailsPager);
+        DetailsAdapter adapter = new DetailsAdapter(getSupportFragmentManager(), getLifecycle());
+        adapter.addFragment(new ForecastDetails1Fragment());
+        adapter.addFragment(new ForecastDetails2Fragment());
+        adapter.addFragment(new ForecastNextDaysFragment());
+        detailsPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+        detailsPager.setAdapter(adapter);
 
-        generalInfoBtn.setOnClickListener((view) ->{
-            showInfo(GeneralInfoFragment.class);
-        });*/
         /*
         WeatherTask task = new WeatherTask();
         task.execute();*/
@@ -51,7 +57,7 @@ public class ForecastActivity extends AppCompatActivity {
     void showInfo(Class<? extends Fragment> fragmentClass){
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainerView, fragmentClass, null)
+                .replace(R.id.detailsPager, fragmentClass, null)
                 .setReorderingAllowed(true)
                 .addToBackStack("name")
                 .commit();
@@ -90,9 +96,9 @@ public class ForecastActivity extends AppCompatActivity {
 
         TextView text = findViewById(R.id.temp);
         text.setText(temp);
-        text = findViewById(R.id.temp_min);
+        text = findViewById(R.id.minimal);
         text.setText(tempMin);
-        text = findViewById(R.id.temp_max);
+        text = findViewById(R.id.maximal);
         text.setText(tempMax);
 
         text = findViewById(R.id.pressure);
@@ -115,7 +121,7 @@ public class ForecastActivity extends AppCompatActivity {
         text.setText(new SimpleDateFormat("hh:mm a dd/MM/yyyy", Locale.ENGLISH).format(new Date(sunrise*1000)));
         text = findViewById(R.id.sunset);
         text.setText(new SimpleDateFormat("hh:mm a dd/MM/yyyy", Locale.ENGLISH).format(new Date(sunset*1000)));
-        text = findViewById(R.id.address);
+        text = findViewById(R.id.location);
         text.setText(city);
     }
 
@@ -159,8 +165,7 @@ public class ForecastActivity extends AppCompatActivity {
         protected String doInBackground(String... strings) {
             String response;
             try {
-                // TODO add units
-                URL url = new URL("https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=metric&appid=" + keyAPI);
+                URL url = new URL("https://api.openweathermap.org/data/2.5/weather?q=" + city + "&cnt=4&appid=" + keyAPI + "&units=" + units);
                 URLConnection urlConn = url.openConnection();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
 

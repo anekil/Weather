@@ -19,6 +19,10 @@
             android:layout_weight="1"
             android:weightSum="2">
 
+            <Space
+                android:layout_width="2dp"
+                android:layout_height="match_parent"/>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -81,6 +85,11 @@
                     android:adjustViewBounds="true" >
                 </ImageView>
             </LinearLayout>
+
+            <Space
+                android:layout_width="2dp"
+                android:layout_height="match_parent"/>
+
         </LinearLayout>
 
         <Space
@@ -93,6 +102,10 @@
             android:orientation="horizontal"
             android:layout_weight="1"
             android:weightSum="2">
+
+            <Space
+                android:layout_width="2dp"
+                android:layout_height="match_parent"/>
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -157,6 +170,10 @@
                     android:adjustViewBounds="true" >
                 </ImageView>
             </LinearLayout>
+
+            <Space
+                android:layout_width="2dp"
+                android:layout_height="match_parent"/>
 
         </LinearLayout>
 

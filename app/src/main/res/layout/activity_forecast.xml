@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="?colorPrimary"
     android:padding="25dp"
-    tools:context=".ForecastActivity">
+    tools:context=".MenuActivity">
 
     <LinearLayout
         android:id="@+id/mainContainer"
@@ -117,12 +117,10 @@
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/fragmentContainerView3"
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/detailsPager"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentBottom="true"
-                tools:layout="@layout/fragment_forecast_details1" />
+                android:layout_height="match_parent" />
         </RelativeLayout>
 
     </LinearLayout>
