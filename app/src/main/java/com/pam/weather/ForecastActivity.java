@@ -7,6 +7,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.text.Normalizer;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -15,6 +20,7 @@ public class ForecastActivity extends AppCompatActivity {
     String keyAPI = "a7801ab3bb1ab1a6e70f97bb4b575006";
     String city;
     String units;
+    DetailsAdapter details;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +42,15 @@ public class ForecastActivity extends AppCompatActivity {
 
     private void callAPI() {
         WeatherApiService apiService = RetrofitClient.getRetrofitInstance().create(WeatherApiService.class);
-        Call<WeatherResponse> call = apiService.getCurrentWeatherData(city, "4", units, keyAPI);
+        String encodedCityName;
+        try {
+            encodedCityName = URLEncoder.encode(city, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            encodedCityName = Normalizer.normalize(city, Normalizer.Form.NFD)
+                    .replaceAll("\\p{M}", "")
+                    .replaceAll("[^\\p{ASCII}]", "");
+        }
+        Call<WeatherResponse> call = apiService.getCurrentWeatherData(encodedCityName, "4", units, keyAPI);
 
         call.enqueue(new Callback<WeatherResponse>() {
             @Override
@@ -104,27 +118,31 @@ public class ForecastActivity extends AppCompatActivity {
         text = findViewById(R.id.status);
         text.setText(weather.weather.get(0).description);
         text = findViewById(R.id.temp);
-        text.setText(String.valueOf(weather.main.temp));
+        text.setText(String.valueOf(Math.round(weather.main.temp)));
         text = findViewById(R.id.feels_like);
-        text.setText(String.valueOf(weather.main.feels_like));
-        /*text = findViewById(R.id.minimal);
+        text.setText(String.valueOf(Math.round(weather.main.feels_like)));
+/*
+        ForecastDetails1Fragment fragment1 = (ForecastDetails1Fragment) details.createFragment(0);
+        text = fragment1.getView().findViewById(R.id.minimal);
         text.setText(String.valueOf(weather.main.temp_min));
-        text = findViewById(R.id.maximal);
+        text = fragment1.getView().findViewById(R.id.maximal);
         text.setText(String.valueOf(weather.main.temp_max));
-        text = findViewById(R.id.temp);
-        text.setText(String.valueOf(weather.main.temp));
-        text = findViewById(R.id.pressure);
-        text.setText(String.valueOf(weather.main.pressure));
-        text = findViewById(R.id.humidity);
-        text.setText(String.valueOf(weather.main.humidity));
-        text = findViewById(R.id.visibility);
-        text.setText(String.valueOf(weather.visibility));
-        text = findViewById(R.id.wind);
-        text.setText(String.valueOf(weather.wind.speed));
-        text = findViewById(R.id.sunrise);
+        text = fragment1.getView().findViewById(R.id.sunrise);
         text.setText(String.valueOf(weather.sys.sunrise));
-        text = findViewById(R.id.sunset);
-        text.setText(String.valueOf(weather.sys.sunset));*/
+        text = fragment1.getView().findViewById(R.id.sunset);
+        text.setText(String.valueOf(weather.sys.sunset));
+
+        ForecastDetails2Fragment fragment2 = (ForecastDetails2Fragment) details.createFragment(1);
+        text = fragment2.getView().findViewById(R.id.pressure);
+        text.setText(String.valueOf(weather.main.pressure));
+        text = fragment2.getView().findViewById(R.id.humidity);
+        text.setText(String.valueOf(weather.main.humidity));
+        text = fragment2.getView().findViewById(R.id.visibility);
+        text.setText(String.valueOf(weather.visibility));
+        text = fragment2.getView().findViewById(R.id.wind);
+        text.setText(String.valueOf(weather.wind.speed));
+
+        ForecastNextDaysFragment fragment3 = (ForecastNextDaysFragment) details.createFragment(2);*/
     }
 
 /*

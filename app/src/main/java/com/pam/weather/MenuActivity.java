@@ -18,18 +18,19 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class MenuActivity extends AppCompatActivity {
+    EditText input;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu);
 
-        EditText input = findViewById(R.id.inputField);
+        input = findViewById(R.id.inputField);
 
         findViewById(R.id.nextBtn).setOnClickListener(view -> {
             Intent intent = new Intent(MenuActivity.this, ForecastActivity.class);
             SwitchMaterial simpleSwitch = findViewById(R.id.units);
             intent.putExtra("units", simpleSwitch.isChecked());
-            String cityName = input.getText().toString();
+            String cityName = input.getText().toString().trim();
             intent.putExtra("cityName", cityName);
             startActivity(intent);
         });
@@ -78,6 +79,7 @@ public class MenuActivity extends AppCompatActivity {
             }
             TextView cityName =  convertView.findViewById(R.id.city_name);
             cityName.setText(getItem(position));
+            cityName.setOnClickListener(v -> input.setText(getItem(position)));
             convertView.findViewById(R.id.deleteBtn).setOnClickListener(v -> deleteItem(position));
             return convertView;
         }

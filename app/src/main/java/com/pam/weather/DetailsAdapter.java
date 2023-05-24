@@ -21,6 +21,11 @@ public class DetailsAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         return fragmentList.get(position);
     }
+
+    public void updateFragment(int position, Fragment fragment) {
+        fragmentList.remove(position);
+        fragmentList.add(fragment);
+    }
     public void addFragment(Fragment fragment) {
         fragmentList.add(fragment);
     }

@@ -3,6 +3,9 @@ package com.pam.weather;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -16,7 +19,6 @@ public class RetrofitClient {
             /*Gson gson = new GsonBuilder()
                     .setDateFormat("dd.MM.yyyy")
                     .create();*/
-
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
