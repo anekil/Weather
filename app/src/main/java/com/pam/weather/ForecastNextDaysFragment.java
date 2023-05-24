@@ -9,22 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class ForecastNextDaysFragment extends Fragment {
-    /*
- public ForecastDetails1Fragment() {
- }
-
- public static ForecastDetails1Fragment newInstance(String param1, String param2) {
-     ForecastDetails1Fragment fragment = new ForecastDetails1Fragment();
-     return fragment;
- }
-
- @Override
- public void onCreate(Bundle savedInstanceState) {
-     super.onCreate(savedInstanceState);
- }
-*/
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_forecast_next_days, container, false);
+    }
+
+    public static ForecastDetails1Fragment newInstance(WeatherResponse weather) {
+        ForecastDetails1Fragment fragment = new ForecastDetails1Fragment();
+        Bundle args = new Bundle();
+        args.putParcelable("weather", weather);
+        fragment.setArguments(args);
+        return fragment;
     }
 }

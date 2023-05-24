@@ -42,15 +42,7 @@ public class ForecastActivity extends AppCompatActivity {
 
     private void callAPI() {
         WeatherApiService apiService = RetrofitClient.getRetrofitInstance().create(WeatherApiService.class);
-        String encodedCityName;
-        try {
-            encodedCityName = URLEncoder.encode(city, StandardCharsets.UTF_8.toString());
-        } catch (UnsupportedEncodingException e) {
-            encodedCityName = Normalizer.normalize(city, Normalizer.Form.NFD)
-                    .replaceAll("\\p{M}", "")
-                    .replaceAll("[^\\p{ASCII}]", "");
-        }
-        Call<WeatherResponse> call = apiService.getCurrentWeatherData(encodedCityName, "4", units, keyAPI);
+        Call<WeatherResponse> call = apiService.getCurrentWeatherData(city, "4", units, keyAPI);
 
         call.enqueue(new Callback<WeatherResponse>() {
             @Override
@@ -86,9 +78,6 @@ public class ForecastActivity extends AppCompatActivity {
     private void setupDetailsPager() {
         ViewPager2 detailsPager = findViewById(R.id.detailsPager);
         DetailsAdapter adapter = new DetailsAdapter(getSupportFragmentManager(), getLifecycle());
-        adapter.addFragment(new ForecastDetails1Fragment());
-        adapter.addFragment(new ForecastDetails2Fragment());
-        adapter.addFragment(new ForecastNextDaysFragment());
         detailsPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         detailsPager.setAdapter(adapter);
     }
@@ -121,6 +110,8 @@ public class ForecastActivity extends AppCompatActivity {
         text.setText(String.valueOf(Math.round(weather.main.temp)));
         text = findViewById(R.id.feels_like);
         text.setText(String.valueOf(Math.round(weather.main.feels_like)));
+
+        details.updateWeather(weather);
 /*
         ForecastDetails1Fragment fragment1 = (ForecastDetails1Fragment) details.createFragment(0);
         text = fragment1.getView().findViewById(R.id.minimal);
