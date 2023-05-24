@@ -29,7 +29,8 @@ public class MenuActivity extends AppCompatActivity {
             Intent intent = new Intent(MenuActivity.this, ForecastActivity.class);
             SwitchMaterial simpleSwitch = findViewById(R.id.units);
             intent.putExtra("units", simpleSwitch.isChecked());
-            intent.putExtra("cityName", input.getText().toString());
+            String cityName = input.getText().toString();
+            intent.putExtra("cityName", cityName);
             startActivity(intent);
         });
 

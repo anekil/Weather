@@ -19,7 +19,7 @@ public class WeatherResponse {
     @SerializedName("sys")
     public Sys sys;
     @SerializedName("dt")
-    public float dt;
+    public int dt;
     @SerializedName("name")
     public String name;
     @SerializedName("cod")

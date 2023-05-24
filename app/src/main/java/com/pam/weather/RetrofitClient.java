@@ -13,13 +13,14 @@ public class RetrofitClient {
 
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
-            Gson gson = new GsonBuilder()
+            /*Gson gson = new GsonBuilder()
                     .setDateFormat("dd.MM.yyyy")
-                    .create();
+                    .create();*/
 
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .addConverterFactory(GsonConverterFactory.create())
+                    //.addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
         }
         return retrofit;
