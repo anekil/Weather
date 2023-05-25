@@ -1,4 +1,4 @@
-package com.pam.weather;
+package com.pam.weather.detailsfragments;
 
 
 import androidx.annotation.NonNull;
@@ -7,11 +7,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.pam.weather.WeatherResponse;
+
 import java.util.ArrayList;
 
 public class DetailsAdapter extends FragmentStateAdapter {
-    private WeatherResponse weather;
-    private ArrayList<Fragment> fragmentList = new ArrayList<>();
+    private ArrayList<DetailsFragment> fragmentList = new ArrayList<>();
+    WeatherResponse weather = null;
 
     public DetailsAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
         super(fragmentManager, lifecycle);
@@ -20,23 +22,19 @@ public class DetailsAdapter extends FragmentStateAdapter {
         fragmentList.add(new ForecastNextDaysFragment());
     }
 
-    public void updateWeather(WeatherResponse weatherResponse){
-        weather = weatherResponse;
-    }
-
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        Fragment fragment;
-        switch(position) {
-            case 1: fragment = ForecastDetails2Fragment.newInstance(weather); break;
-            case 2: fragment = ForecastNextDaysFragment.newInstance(weather); break;
-            default: fragment = ForecastDetails1Fragment.newInstance(weather); break;
-        };
+        DetailsFragment fragment = fragmentList.get(position);
+        fragment.loadWeather(weather);
         return fragment;
     }
     @Override
     public int getItemCount() {
         return fragmentList.size();
+    }
+
+    public void setWeather(WeatherResponse weatherResponse){
+        weather = weatherResponse;
     }
 }

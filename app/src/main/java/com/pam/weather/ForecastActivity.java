@@ -1,5 +1,6 @@
 package com.pam.weather;
 
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -7,10 +8,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.text.Normalizer;
+import com.pam.weather.detailsfragments.DetailsAdapter;
+import com.pam.weather.detailsfragments.DetailsFragment;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,7 +19,8 @@ public class ForecastActivity extends AppCompatActivity {
     String keyAPI = "a7801ab3bb1ab1a6e70f97bb4b575006";
     String city;
     String units;
-    DetailsAdapter details;
+    ViewPager2 detailsPager;
+    DetailsAdapter detailsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,10 +76,10 @@ public class ForecastActivity extends AppCompatActivity {
     }
 
     private void setupDetailsPager() {
-        ViewPager2 detailsPager = findViewById(R.id.detailsPager);
-        DetailsAdapter adapter = new DetailsAdapter(getSupportFragmentManager(), getLifecycle());
+        detailsPager = findViewById(R.id.detailsPager);
+        detailsAdapter = new DetailsAdapter(getSupportFragmentManager(), getLifecycle());
         detailsPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
-        detailsPager.setAdapter(adapter);
+        detailsPager.setAdapter(detailsAdapter);
     }
 
     void loadingScreen(){
@@ -111,29 +111,12 @@ public class ForecastActivity extends AppCompatActivity {
         text = findViewById(R.id.feels_like);
         text.setText(String.valueOf(Math.round(weather.main.feels_like)));
 
-        details.updateWeather(weather);
-/*
-        ForecastDetails1Fragment fragment1 = (ForecastDetails1Fragment) details.createFragment(0);
-        text = fragment1.getView().findViewById(R.id.minimal);
-        text.setText(String.valueOf(weather.main.temp_min));
-        text = fragment1.getView().findViewById(R.id.maximal);
-        text.setText(String.valueOf(weather.main.temp_max));
-        text = fragment1.getView().findViewById(R.id.sunrise);
-        text.setText(String.valueOf(weather.sys.sunrise));
-        text = fragment1.getView().findViewById(R.id.sunset);
-        text.setText(String.valueOf(weather.sys.sunset));
+        detailsAdapter.setWeather(weather);
 
-        ForecastDetails2Fragment fragment2 = (ForecastDetails2Fragment) details.createFragment(1);
-        text = fragment2.getView().findViewById(R.id.pressure);
-        text.setText(String.valueOf(weather.main.pressure));
-        text = fragment2.getView().findViewById(R.id.humidity);
-        text.setText(String.valueOf(weather.main.humidity));
-        text = fragment2.getView().findViewById(R.id.visibility);
-        text.setText(String.valueOf(weather.visibility));
-        text = fragment2.getView().findViewById(R.id.wind);
-        text.setText(String.valueOf(weather.wind.speed));
-
-        ForecastNextDaysFragment fragment3 = (ForecastNextDaysFragment) details.createFragment(2);*/
+        for(int i=0; i<detailsAdapter.getItemCount(); i++){
+            DetailsFragment fragment = (DetailsFragment) detailsAdapter.createFragment(i);
+            fragment.loadWeather(weather);
+        }
     }
 
 /*
@@ -143,7 +126,7 @@ public class ForecastActivity extends AppCompatActivity {
         boolean connected = (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED);
         return connected;
-    }
-
     }*/
+
+    }
 }

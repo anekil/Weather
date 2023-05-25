@@ -3,6 +3,7 @@ package com.pam.weather;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +13,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MenuActivity extends AppCompatActivity {
     EditText input;
@@ -44,6 +48,22 @@ public class MenuActivity extends AppCompatActivity {
         });
     }
 
+    void saveFavourites(){
+        SharedPreferences.Editor prefsEditor = getPreferences(MODE_PRIVATE).edit();
+        Gson gson = new Gson();
+        for (Map.Entry<String,WeatherResponse> entry : FavouritesData.getFavourites().entrySet()) {
+            String json = gson.toJson(entry.getValue());
+            prefsEditor.putString(entry.getKey(), json);
+        }
+        prefsEditor.commit();
+    }
+
+    void loadFavourites(){
+        Gson gson = new Gson();
+        String json = getPreferences(MODE_PRIVATE).getString("favourites", "");
+        HashMap<String, WeatherResponse> data = gson.fromJson(json, HashMap.class);
+        FavouritesData.loadData(data);
+    }
 
     private class CitiesListAdapter extends BaseAdapter {
         ArrayList<String> favourites = new ArrayList<>();
@@ -63,11 +83,13 @@ public class MenuActivity extends AppCompatActivity {
         }
 
         public void deleteItem(int position) {
+            FavouritesData.deleteFavourite(favourites.get(position));
             favourites.remove(position);
             notifyDataSetChanged();
         }
 
         public void addItem(String cityName) {
+            FavouritesData.addFavourite(cityName, null);
             favourites.add(cityName);
             notifyDataSetChanged();
         }
@@ -83,8 +105,6 @@ public class MenuActivity extends AppCompatActivity {
             convertView.findViewById(R.id.deleteBtn).setOnClickListener(v -> deleteItem(position));
             return convertView;
         }
-
-
     }
 }
 
