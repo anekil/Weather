@@ -1,7 +1,13 @@
 package com.pam.weather;
 
 public enum Units {
-    STANDARD,
-    METRIC,
-    IMPERIAL
+    STANDARD (" K"),
+    METRIC (" ℃"),
+    IMPERIAL (" °F");
+
+    public final String label;
+
+    private Units(String label) {
+        this.label = label;
+    }
 }

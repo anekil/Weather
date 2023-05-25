@@ -14,10 +14,9 @@ import android.widget.TextView;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.gson.Gson;
+import com.pam.weather.weatherresponse.WeatherResponse;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +50,7 @@ public class MenuActivity extends AppCompatActivity {
     void saveFavourites(){
         SharedPreferences.Editor prefsEditor = getPreferences(MODE_PRIVATE).edit();
         Gson gson = new Gson();
-        for (Map.Entry<String,WeatherResponse> entry : FavouritesData.getFavourites().entrySet()) {
+        for (Map.Entry<String, WeatherResponse> entry : FavouritesData.getFavourites().entrySet()) {
             String json = gson.toJson(entry.getValue());
             prefsEditor.putString(entry.getKey(), json);
         }
