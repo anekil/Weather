@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.pam.weather.FavouritesData;
 import com.pam.weather.R;
 import com.pam.weather.weatherresponse.Weather;
 import com.pam.weather.weatherresponse.WeatherResponse;
@@ -15,7 +16,7 @@ public class ForecastGeneralFragment extends DetailsFragment {
     View rootView = null;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_forecast_details1, container, false);
+        rootView = inflater.inflate(R.layout.fragment_forecast_general, container, false);
         return rootView;
     }
 
@@ -23,16 +24,12 @@ public class ForecastGeneralFragment extends DetailsFragment {
         if(rootView == null)
             return;
 
-        TextView text = rootView.findViewById(R.id.location);
-        text.setText(weather.city.name);
-        text = rootView.findViewById(R.id.updated_at);
-        text.setText(String.valueOf(weather.list.get(0).dt));
-        text = rootView.findViewById(R.id.status);
+        TextView text = rootView.findViewById(R.id.status);
         text.setText(weather.list.get(0).weather.get(0).description);
         text = rootView.findViewById(R.id.temp);
-        text.setText(Math.round(weather.list.get(0).main.temp) + units.label);
+        text.setText(Math.round(weather.list.get(0).main.temp) + FavouritesData.getUnits().label);
         text = rootView.findViewById(R.id.feels_like);
-        text.setText(Math.round(weather.list.get(0).main.feels_like) + units.label);
+        text.setText(Math.round(weather.list.get(0).main.feels_like) + FavouritesData.getUnits().label);
 
         setIcon(rootView.findViewById(R.id.status_image), weather.list.get(0).weather.get(0));
     }

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.pam.weather.FavouritesData;
 import com.pam.weather.R;
 import com.pam.weather.weatherresponse.WeatherResponse;
 
@@ -23,9 +24,9 @@ public class ForecastDetails1Fragment extends DetailsFragment {
             return;
 
         TextView text = rootView.findViewById(R.id.minimal);
-        text.setText(String.valueOf(weather.list.get(0).main.temp_min));
+        text.setText(weather.list.get(0).main.temp_min + FavouritesData.getUnits().label);
         text = rootView.findViewById(R.id.maximal);
-        text.setText(String.valueOf(weather.list.get(0).main.temp_max));
+        text.setText(weather.list.get(0).main.temp_max + FavouritesData.getUnits().label);
         text = rootView.findViewById(R.id.sunrise);
         text.setText(String.valueOf(weather.city.sunrise));
         text = rootView.findViewById(R.id.sunset);

@@ -5,7 +5,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +22,6 @@ import retrofit2.Response;
 public class ForecastActivity extends AppCompatActivity {
     private static final String API_KEY = "a7801ab3bb1ab1a6e70f97bb4b575006";
     String city;
-    Units units;
     WeatherResponse currentWeather;
     ViewPager2 detailsPager;
     DetailsAdapter detailsAdapter;
@@ -35,12 +33,6 @@ public class ForecastActivity extends AppCompatActivity {
         loadingScreen();
         Bundle bundle = getIntent().getExtras();
         city = bundle.getString("cityName");
-        boolean imperialUnits = bundle.getBoolean("units");
-        if(imperialUnits)
-            units = Units.IMPERIAL;
-        else
-            units = Units.METRIC;
-
         setupDetailsPager();
         if(checkInternetConnection()){
             Thread callingAPI = new Thread(this::callAPI);
@@ -58,7 +50,7 @@ public class ForecastActivity extends AppCompatActivity {
 
     private void callAPI() {
         WeatherApiService apiService = RetrofitClient.getRetrofitInstance().create(WeatherApiService.class);
-        Call<WeatherResponse> call = apiService.getCurrentWeatherData(city, "4", units.name(), API_KEY);
+        Call<WeatherResponse> call = apiService.getCurrentWeatherData(city, "4", FavouritesData.getUnits().name(), API_KEY);
 
         call.enqueue(new Callback<WeatherResponse>() {
             @Override
@@ -125,12 +117,12 @@ public class ForecastActivity extends AppCompatActivity {
     }
 
     void updateForecast() {
-
-
+        TextView text = findViewById(R.id.location);
+        text.setText(currentWeather.city.name);
+        text = findViewById(R.id.updated_at);
+        text.setText(String.valueOf(currentWeather.list.get(0).dt));
         detailsAdapter.setWeather(currentWeather);
     }
-
-
 
     boolean checkInternetConnection(){
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);

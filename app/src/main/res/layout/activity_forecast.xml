@@ -42,78 +42,8 @@
                 android:textSize="14sp"/>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/overviewContainer"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            app:layout_constraintBottom_toTopOf="@+id/fragmentContainerView3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addressContainer">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/temp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-thin"
-                    android:gravity="center"
-                    android:text="24℃"
-                    android:textSize="70sp"/>
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Feels like"/>
-
-                <Space
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:id="@+id/feels_like"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="temp"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_weight="2"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Clear sky"
-                    android:textSize="18sp"/>
-
-                <ImageView
-                    android:id="@+id/status_image"
-                    android:src="@drawable/clear"
-                    android:layout_margin="14dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
         <RelativeLayout
-            android:layout_weight="3"
+            android:layout_weight="6"
             android:layout_width="match_parent"
             android:layout_height="0dp">
 

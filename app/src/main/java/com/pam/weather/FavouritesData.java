@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 public class FavouritesData {
     static HashMap<String, WeatherResponse> favourites = new HashMap<>();
+    static Units units = Units.METRIC;
 
     static void addFavourite(String cityName, WeatherResponse weather){
         favourites.put(cityName, weather);
@@ -25,5 +26,13 @@ public class FavouritesData {
 
     static void loadData(HashMap<String, WeatherResponse> data){
         favourites = data;
+    }
+
+    static void setUnits(Units newUnits){
+        units = newUnits;
+    }
+
+    public static Units getUnits(){
+        return units;
     }
 }

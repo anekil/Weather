@@ -26,9 +26,10 @@ public class DetailsAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        DetailsFragment fragment = fragmentList.get(position);
+        /*DetailsFragment fragment = fragmentList.get(position);
         fragment.loadWeather(weather);
-        return fragment;
+        return fragment;*/
+        return fragmentList.get(position);
     }
     @Override
     public int getItemCount() {

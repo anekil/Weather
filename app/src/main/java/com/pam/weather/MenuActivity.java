@@ -2,8 +2,11 @@ package com.pam.weather;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.gson.Gson;
@@ -20,7 +24,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MenuActivity extends AppCompatActivity {
+    private static final String API_KEY = "a7801ab3bb1ab1a6e70f97bb4b575006";
     EditText input;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +38,16 @@ public class MenuActivity extends AppCompatActivity {
 
         input = findViewById(R.id.inputField);
 
+        SwitchMaterial simpleSwitch = findViewById(R.id.units);
+        simpleSwitch.setOnCheckedChangeListener((view, isChecked) -> {
+            if(isChecked)
+                FavouritesData.setUnits(Units.IMPERIAL);
+            else
+                FavouritesData.setUnits(Units.METRIC);
+        });
+
         findViewById(R.id.nextBtn).setOnClickListener(view -> {
             Intent intent = new Intent(MenuActivity.this, ForecastActivity.class);
-            SwitchMaterial simpleSwitch = findViewById(R.id.units);
-            intent.putExtra("units", simpleSwitch.isChecked());
             String cityName = input.getText().toString().trim();
             intent.putExtra("cityName", cityName);
             startActivity(intent);
@@ -45,6 +60,35 @@ public class MenuActivity extends AppCompatActivity {
         findViewById(R.id.favouriteBtn).setOnClickListener(view -> {
             adapter.addItem(input.getText().toString());
         });
+
+        findViewById(R.id.refreshBtn).setOnClickListener(view -> {
+            if(checkInternetConnection()){
+                refreshFavourites();
+                saveFavourites();
+            } else {
+                loadFavourites();
+            }
+        });
+    }
+
+    void refreshFavourites(){
+        WeatherApiService apiService = RetrofitClient.getRetrofitInstance().create(WeatherApiService.class);
+        for (Map.Entry<String, WeatherResponse> entry : FavouritesData.getFavourites().entrySet()) {
+            Call<WeatherResponse> call = apiService.getCurrentWeatherData(entry.getKey(), "4", FavouritesData.getUnits().name(), API_KEY);
+            call.enqueue(new Callback<WeatherResponse>() {
+                @Override
+                public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
+                    if (response.isSuccessful()) {
+                        FavouritesData.addFavourite(entry.getKey(), response.body());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<WeatherResponse> call, Throwable t) {
+                    Toast.makeText(MenuActivity.this, "Couldn't refresh", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     void saveFavourites(){
@@ -88,6 +132,8 @@ public class MenuActivity extends AppCompatActivity {
         }
 
         public void addItem(String cityName) {
+            if(favourites.contains(cityName))
+                return;
             FavouritesData.addFavourite(cityName, null);
             favourites.add(cityName);
             notifyDataSetChanged();
@@ -104,6 +150,12 @@ public class MenuActivity extends AppCompatActivity {
             convertView.findViewById(R.id.deleteBtn).setOnClickListener(v -> deleteItem(position));
             return convertView;
         }
+    }
+
+    boolean checkInternetConnection(){
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        return (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED);
     }
 }
 
