@@ -29,7 +29,7 @@ public class ForecastNextDaysFragment extends DetailsFragment {
         TextView text = rootView.findViewById(R.id.date1);
         text.setText(weather.list.get(1).getDt());
         text = rootView.findViewById(R.id.temp1);
-        text.setText(Math.round(weather.list.get(1).main.temp) + FavouritesData.getUnits().label);
+        text.setText(Math.round(weather.list.get(1).main.temp) + weather.units.temp_label);
         text = rootView.findViewById(R.id.status1);
         text.setText(String.valueOf(weather.list.get(1).weather.get(0).description));
         setIcon(rootView.findViewById(R.id.statusImage1), weather.list.get(1).weather.get(0));
@@ -37,7 +37,7 @@ public class ForecastNextDaysFragment extends DetailsFragment {
         text = rootView.findViewById(R.id.date2);
         text.setText(weather.list.get(2).getDt());
         text = rootView.findViewById(R.id.temp2);
-        text.setText(Math.round(weather.list.get(2).main.temp) + FavouritesData.getUnits().label);
+        text.setText(Math.round(weather.list.get(2).main.temp) + weather.units.temp_label);
         text = rootView.findViewById(R.id.status2);
         text.setText(String.valueOf(weather.list.get(2).weather.get(0).description));
         setIcon(rootView.findViewById(R.id.statusImage2), weather.list.get(2).weather.get(0));
@@ -45,7 +45,7 @@ public class ForecastNextDaysFragment extends DetailsFragment {
         text = rootView.findViewById(R.id.date3);
         text.setText(weather.list.get(3).getDt());
         text = rootView.findViewById(R.id.temp3);
-        text.setText(Math.round(weather.list.get(3).main.temp) + FavouritesData.getUnits().label);
+        text.setText(Math.round(weather.list.get(3).main.temp) + weather.units.temp_label);
         text = rootView.findViewById(R.id.status3);
         text.setText(String.valueOf(weather.list.get(3).weather.get(0).description));
         setIcon(rootView.findViewById(R.id.statusImage3), weather.list.get(3).weather.get(0));

@@ -20,6 +20,6 @@ public class WeatherForDay {
     public long dt;
 
     public String getDt(){
-        return new SimpleDateFormat("HH:mm dd.MM", Locale.ENGLISH).format(new Date(dt * 1000));
+        return new SimpleDateFormat("dd.MM", Locale.ENGLISH).format(new Date(dt * 1000));
     }
 }

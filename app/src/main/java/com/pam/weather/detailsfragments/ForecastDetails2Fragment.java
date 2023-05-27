@@ -7,7 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.pam.weather.FavouritesData;
 import com.pam.weather.R;
+import com.pam.weather.Units;
 import com.pam.weather.weatherresponse.WeatherResponse;
 
 public class ForecastDetails2Fragment extends DetailsFragment {
@@ -23,12 +25,12 @@ public class ForecastDetails2Fragment extends DetailsFragment {
             return;
 
         TextView text = rootView.findViewById(R.id.pressure);
-        text.setText(String.valueOf(weather.list.get(0).main.pressure));
+        text.setText(weather.list.get(0).main.pressure + "hPa");
         text = rootView.findViewById(R.id.humidity);
-        text.setText(String.valueOf(weather.list.get(0).main.humidity));
+        text.setText(weather.list.get(0).main.humidity + "%");
         text = rootView.findViewById(R.id.visibility);
-        text.setText(String.valueOf(weather.list.get(0).visibility));
+        text.setText(weather.list.get(0).visibility + "m");
         text = rootView.findViewById(R.id.wind);
-        text.setText(String.valueOf(weather.list.get(0).wind.speed));
+        text.setText(weather.list.get(0).wind.speed + weather.units.speed_label);
     }
 }

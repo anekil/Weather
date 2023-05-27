@@ -27,9 +27,9 @@ public class ForecastGeneralFragment extends DetailsFragment {
         TextView text = rootView.findViewById(R.id.status);
         text.setText(weather.list.get(0).weather.get(0).description);
         text = rootView.findViewById(R.id.temp);
-        text.setText(Math.round(weather.list.get(0).main.temp) + FavouritesData.getUnits().label);
+        text.setText(Math.round(weather.list.get(0).main.temp) + weather.units.temp_label);
         text = rootView.findViewById(R.id.feels_like);
-        text.setText(Math.round(weather.list.get(0).main.feels_like) + FavouritesData.getUnits().label);
+        text.setText(Math.round(weather.list.get(0).main.feels_like) + weather.units.temp_label);
 
         setIcon(rootView.findViewById(R.id.status_image), weather.list.get(0).weather.get(0));
     }

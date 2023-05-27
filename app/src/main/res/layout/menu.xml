@@ -7,14 +7,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
+    <com.google.android.material.chip.ChipGroup
         android:id="@+id/units"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Imperial Units "
-        android:textColor="?colorSecondary"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="@+id/textView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:singleSelection="true" >
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/standard"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="standard"
+            android:textColor="?colorSecondary"
+            app:chipBackgroundColor="?colorPrimary" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/metric"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="metric"
+            android:textColor="?colorSecondary"
+            app:chipBackgroundColor="?colorPrimary" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/imperial"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="imperial"
+            android:textColor="?colorSecondary"
+            app:chipBackgroundColor="?colorPrimary" />
+
+    </com.google.android.material.chip.ChipGroup>
 
     <ImageButton
         android:id="@+id/refreshBtn"

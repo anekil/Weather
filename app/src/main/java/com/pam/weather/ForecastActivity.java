@@ -13,9 +13,11 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.pam.weather.detailsfragments.DetailsAdapter;
 import com.pam.weather.detailsfragments.DetailsFragment;
+import com.pam.weather.weatherresponse.WeatherForDay;
 import com.pam.weather.weatherresponse.WeatherResponse;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -29,6 +31,7 @@ public class ForecastActivity extends AppCompatActivity {
     WeatherResponse currentWeather;
     ViewPager2 detailsPager;
     DetailsAdapter detailsAdapter;
+    Units units;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,7 @@ public class ForecastActivity extends AppCompatActivity {
         loadingScreen();
         Bundle bundle = getIntent().getExtras();
         city = bundle.getString("cityName");
+        units = (Units) bundle.getSerializable("units");
         setupDetailsPager();
         if(checkInternetConnection()){
             Thread callingAPI = new Thread(this::callAPI);
@@ -53,7 +57,7 @@ public class ForecastActivity extends AppCompatActivity {
 
     private void callAPI() {
         WeatherApiService apiService = RetrofitClient.getRetrofitInstance().create(WeatherApiService.class);
-        Call<WeatherResponse> call = apiService.getCurrentWeatherData(city, "4", FavouritesData.getUnits().name(), API_KEY);
+        Call<WeatherResponse> call = apiService.getCurrentWeatherData(city, "25", units.name(), API_KEY);
 
         call.enqueue(new Callback<WeatherResponse>() {
             @Override
@@ -61,6 +65,12 @@ public class ForecastActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     currentWeather = response.body();
                     if (currentWeather != null) {
+                        currentWeather.units = units;
+                        ArrayList<WeatherForDay> days = new ArrayList<>();
+                        for(int i=0; i<=24; i+=8){
+                            days.add(currentWeather.list.get(i));
+                        }
+                        currentWeather.list = days;
                         updateForecast();
                         dataScreen();
                     } else {

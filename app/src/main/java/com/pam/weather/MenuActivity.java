@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.gson.Gson;
 import com.pam.weather.weatherresponse.WeatherResponse;
@@ -31,6 +32,7 @@ import retrofit2.Response;
 public class MenuActivity extends AppCompatActivity {
     private static final String API_KEY = "a7801ab3bb1ab1a6e70f97bb4b575006";
     EditText input;
+    Units units;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,18 +40,21 @@ public class MenuActivity extends AppCompatActivity {
 
         input = findViewById(R.id.inputField);
 
-        SwitchMaterial simpleSwitch = findViewById(R.id.units);
-        simpleSwitch.setOnCheckedChangeListener((view, isChecked) -> {
-            if(isChecked)
-                FavouritesData.setUnits(Units.IMPERIAL);
-            else
-                FavouritesData.setUnits(Units.METRIC);
+        ChipGroup unitsGroup = findViewById(R.id.units);
+        unitsGroup.setSelectionRequired(true);
+        unitsGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId){
+                case 0: units = Units.STANDARD; break;
+                case 1: units = Units.METRIC; break;
+                case 2: units = Units.IMPERIAL; break;
+            }
         });
 
         findViewById(R.id.nextBtn).setOnClickListener(view -> {
             Intent intent = new Intent(MenuActivity.this, ForecastActivity.class);
             String cityName = input.getText().toString().trim();
             intent.putExtra("cityName", cityName);
+            intent.putExtra("units", units);
             startActivity(intent);
         });
 
@@ -74,12 +79,14 @@ public class MenuActivity extends AppCompatActivity {
     void refreshFavourites(){
         WeatherApiService apiService = RetrofitClient.getRetrofitInstance().create(WeatherApiService.class);
         for (Map.Entry<String, WeatherResponse> entry : FavouritesData.getFavourites().entrySet()) {
-            Call<WeatherResponse> call = apiService.getCurrentWeatherData(entry.getKey(), "4", FavouritesData.getUnits().name(), API_KEY);
+            Call<WeatherResponse> call = apiService.getCurrentWeatherData(entry.getKey(), "4", units.name(), API_KEY);
             call.enqueue(new Callback<WeatherResponse>() {
                 @Override
                 public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
                     if (response.isSuccessful()) {
-                        FavouritesData.addFavourite(entry.getKey(), response.body());
+                        WeatherResponse weatherResponse = response.body();
+                        weatherResponse.units = units;
+                        FavouritesData.addFavourite(entry.getKey(), weatherResponse);
                     }
                 }
 
