@@ -24,12 +24,12 @@ public class ForecastDetails1Fragment extends DetailsFragment {
             return;
 
         TextView text = rootView.findViewById(R.id.minimal);
-        text.setText(weather.list.get(0).main.temp_min + FavouritesData.getUnits().label);
+        text.setText(Math.round(weather.list.get(0).main.temp_min) + FavouritesData.getUnits().label);
         text = rootView.findViewById(R.id.maximal);
-        text.setText(weather.list.get(0).main.temp_max + FavouritesData.getUnits().label);
+        text.setText(Math.round(weather.list.get(0).main.temp_max) + FavouritesData.getUnits().label);
         text = rootView.findViewById(R.id.sunrise);
-        text.setText(String.valueOf(weather.city.sunrise));
+        text.setText(String.valueOf(weather.city.getSunrise()));
         text = rootView.findViewById(R.id.sunset);
-        text.setText(String.valueOf(weather.city.sunset));
+        text.setText(String.valueOf(weather.city.getSunset()));
     }
 }

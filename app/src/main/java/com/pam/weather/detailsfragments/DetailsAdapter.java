@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 public class DetailsAdapter extends FragmentStateAdapter {
     private ArrayList<DetailsFragment> fragmentList = new ArrayList<>();
-    WeatherResponse weather = null;
 
     public DetailsAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
         super(fragmentManager, lifecycle);
@@ -26,17 +25,10 @@ public class DetailsAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        /*DetailsFragment fragment = fragmentList.get(position);
-        fragment.loadWeather(weather);
-        return fragment;*/
         return fragmentList.get(position);
     }
     @Override
     public int getItemCount() {
         return fragmentList.size();
-    }
-
-    public void setWeather(WeatherResponse weatherResponse){
-        weather = weatherResponse;
     }
 }

@@ -15,6 +15,10 @@ import com.pam.weather.detailsfragments.DetailsAdapter;
 import com.pam.weather.detailsfragments.DetailsFragment;
 import com.pam.weather.weatherresponse.WeatherResponse;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,7 +49,6 @@ public class ForecastActivity extends AppCompatActivity {
                 dataScreen();
             }
         }
-
     }
 
     private void callAPI() {
@@ -120,8 +123,7 @@ public class ForecastActivity extends AppCompatActivity {
         TextView text = findViewById(R.id.location);
         text.setText(currentWeather.city.name);
         text = findViewById(R.id.updated_at);
-        text.setText(String.valueOf(currentWeather.list.get(0).dt));
-        detailsAdapter.setWeather(currentWeather);
+        text.setText(currentWeather.list.get(0).getDt());
     }
 
     boolean checkInternetConnection(){
