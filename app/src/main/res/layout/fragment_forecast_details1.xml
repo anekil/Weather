@@ -48,7 +48,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:src="@drawable/minimal"
-                    android:adjustViewBounds="true" >
+                    android:adjustViewBounds="true"
+                    android:contentDescription="minimal">
                 </ImageView>
             </LinearLayout>
 
@@ -82,7 +83,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:src="@drawable/maximal"
-                    android:adjustViewBounds="true" >
+                    android:adjustViewBounds="true"
+                    android:contentDescription="maximal">
                 </ImageView>
             </LinearLayout>
 
@@ -132,7 +134,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:src="@drawable/sunrise"
-                    android:adjustViewBounds="true">
+                    android:adjustViewBounds="true"
+                    android:contentDescription="sunrise">
                 </ImageView>
 
             </LinearLayout>
@@ -167,7 +170,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:src="@drawable/sunset"
-                    android:adjustViewBounds="true" >
+                    android:adjustViewBounds="true"
+                    android:contentDescription="sunset">
                 </ImageView>
             </LinearLayout>
 

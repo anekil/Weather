@@ -67,23 +67,23 @@ public class RetrofitClient {
         call.enqueue(new Callback<WeatherResponse>() {
             @Override
             public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
-                synchronized (FavouritesManager.currentLock){
-                    if (response.isSuccessful()) {
-                        WeatherResponse weather = response.body();
-                        if (weather != null) {
-                            weather.units = FavouritesManager.currentUnits;
-                            ArrayList<WeatherForDay> days = new ArrayList<>();
-                            for (int i = 0; i <= 24; i += 8) {
-                                days.add(weather.list.get(i));
-                            }
-                            weather.list = days;
-                            weather.list.get(0).dt = Instant.now().getEpochSecond();
-                            FavouritesManager.currentWeather = weather;
-                            callback.onApiResponseCurrent(true);
+                if (response.isSuccessful()) {
+                    WeatherResponse weather = response.body();
+                    if (weather != null) {
+                        weather.units = FavouritesManager.currentUnits;
+                        ArrayList<WeatherForDay> days = new ArrayList<>();
+                        for (int i = 0; i <= 24; i += 8) {
+                            days.add(weather.list.get(i));
                         }
-                        callback.onApiResponseCurrent(false);
+                        weather.list = days;
+                        weather.list.get(0).dt = Instant.now().getEpochSecond();
+                        FavouritesManager.currentWeather = weather;
+                        callback.onApiResponseCurrent(true);
+                    } else {
+                        callback.onApiResponseAll(false);
                     }
-                    callback.onApiResponseCurrent(false);
+                } else {
+                    callback.onApiResponseAll(false);
                 }
             }
             @Override

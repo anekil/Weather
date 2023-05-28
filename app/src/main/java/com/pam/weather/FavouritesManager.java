@@ -17,7 +17,6 @@ public final class FavouritesManager {
     static RetrofitClient retrofitClient;
     private static volatile FavouritesManager instance;
     static HashMap<String, WeatherResponse> favourites;
-    public final static Object currentLock = new Object();
     static String currentCity;
     static WeatherResponse currentWeather = null;
     static Units currentUnits;
@@ -99,10 +98,6 @@ public final class FavouritesManager {
         Gson gson = new Gson();
         String json = gson.toJson(favourites);
         prefsEditor.putString("favourites", json);
-        /*for (Map.Entry<String, WeatherResponse> entry : getFavourites().entrySet()) {
-            String json = gson.toJson(entry.getValue());
-            prefsEditor.putString(entry.getKey(), json);
-        }*/
         prefsEditor.commit();
     }
     static void loadAll(){

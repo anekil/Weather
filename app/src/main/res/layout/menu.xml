@@ -19,33 +19,27 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/standard"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
+            style="@style/Units.MaterialComponents.Chip.Choice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checkable="true"
-            android:text="standard"
-            android:textColor="?colorSecondary"
-            app:chipBackgroundColor="?colorPrimary" />
+            android:text="standard" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/metric"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
+            style="@style/Units.MaterialComponents.Chip.Choice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checkable="true"
-            android:text="metric"
-            android:textColor="?colorSecondary"
-            app:chipBackgroundColor="?colorPrimary" />
+            android:text="metric" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/imperial"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
+            style="@style/Units.MaterialComponents.Chip.Choice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checkable="true"
-            android:text="imperial"
-            android:textColor="?colorSecondary"
-            app:chipBackgroundColor="?colorPrimary" />
+            android:text="imperial" />
 
     </com.google.android.material.chip.ChipGroup>
 
@@ -56,7 +50,8 @@
         android:backgroundTint="?colorPrimary"
         android:src="@drawable/refresh"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/units" />
+        app:layout_constraintTop_toTopOf="@+id/units"
+        android:contentDescription="refresh"/>
 
     <EditText
         android:id="@+id/inputField"
@@ -80,7 +75,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/inputField"
         app:layout_constraintEnd_toStartOf="@+id/inputField"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView" />
+        app:layout_constraintTop_toTopOf="@+id/textView"
+        android:contentDescription="favourite"/>
 
     <TextView
         android:id="@+id/textView"
@@ -99,7 +95,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/inputField"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/inputField"
-        app:layout_constraintTop_toTopOf="@+id/textView" />
+        app:layout_constraintTop_toTopOf="@+id/textView"
+        android:contentDescription="next"/>
 
     <Space
         android:id="@+id/space"

@@ -27,7 +27,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:src="@drawable/refresh"
-                android:adjustViewBounds="true"/>
+                android:adjustViewBounds="true"
+                android:contentDescription="description"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -79,7 +80,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:src="@drawable/refresh"
-                android:adjustViewBounds="true"/>
+                android:adjustViewBounds="true"
+                android:contentDescription="description"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -131,7 +133,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:src="@drawable/refresh"
-                android:adjustViewBounds="true"/>
+                android:adjustViewBounds="true"
+                android:contentDescription="description"/>
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -24,34 +24,48 @@
             android:src="@drawable/refresh"
             app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="refresh" />
+
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Location"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@+id/refreshAllBtn"
+            app:layout_constraintStart_toEndOf="@+id/lon"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:id="@+id/addressContainer"
+        <TextView
+            android:id="@+id/updated_at"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:text="Updated at"
+            android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
             app:layout_constraintEnd_toStartOf="@+id/refreshAllBtn"
+            app:layout_constraintStart_toEndOf="@+id/lat"
+            app:layout_constraintTop_toBottomOf="@+id/location" />
+
+        <TextView
+            android:id="@+id/lon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="lon"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/lat"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Location"
-                android:textSize="24sp" />
-
-            <TextView
-                android:id="@+id/updated_at"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Updated at"
-                android:textSize="14sp" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/lat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="lat"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/updated_at"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <RelativeLayout
             android:id="@+id/relativeLayout"

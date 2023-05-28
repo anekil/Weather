@@ -13,6 +13,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
@@ -35,21 +37,21 @@ public class MenuActivity extends AppCompatActivity implements ApiCallback {
         input = findViewById(R.id.inputField);
         unitsGroup = findViewById(R.id.units);
         unitsGroup.setSelectionRequired(true);
+        unitsGroup.check(R.id.standard);
 
         findViewById(R.id.nextBtn).setOnClickListener(view -> {
             FavouritesManager.currentCity = input.getText().toString().trim();
             FavouritesManager.currentUnits = getCheckedUnits();
-            if(checkInternetConnection()){
-                FavouritesManager.refreshCurrent();
-            } else {
+            if(!checkInternetConnection()) {
                 showToast("No internet connection");
                 showToast("Loading from memory");
-                if(!FavouritesManager.loadCurrent()){
+                if (!FavouritesManager.loadCurrent()) {
                     showToast("Couldn't find in memory");
+                    return;
                 }
-                Intent intent = new Intent(MenuActivity.this, ForecastActivity.class);
-                startActivity(intent);
             }
+            Intent intent = new Intent(MenuActivity.this, ForecastActivity.class);
+            startActivity(intent);
         });
 
         ListView list = findViewById(R.id.citiesList);

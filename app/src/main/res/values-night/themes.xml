@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="Base.Theme.Weather" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:textColor">@color/light_primary</item>
         <item name="colorPrimary">@color/dark_primary</item>
         <item name="colorSecondary">@color/light_primary</item>
         <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="Units.MaterialComponents.Chip.Choice" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/chip_background</item>
+        <item name="android:textColor">@color/chip_text</item>
     </style>
 
     <style name="Theme.Weather" parent="Base.Theme.Weather" />

@@ -75,6 +75,10 @@ public class ForecastActivity extends AppCompatActivity implements ApiCallback {
         text.setText(FavouritesManager.currentWeather.city.name);
         text = findViewById(R.id.updated_at);
         text.setText(FavouritesManager.currentWeather.list.get(0).getFullDt());
+        text = findViewById(R.id.lon);
+        text.setText(String.valueOf(FavouritesManager.currentWeather.city.coord.lon));
+        text = findViewById(R.id.lat);
+        text.setText(String.valueOf(FavouritesManager.currentWeather.city.coord.lat));
 
         for (int i = 0; i < detailsAdapter.getItemCount(); i++) {
             DetailsFragment fragment = (DetailsFragment) detailsAdapter.createFragment(i);
@@ -119,7 +123,7 @@ public class ForecastActivity extends AppCompatActivity implements ApiCallback {
     class RefreshTimer {
         private Timer timer;
         private TimerTask timerTask;
-        private final long TIMER_DELAY = 20000;
+        private final long TIMER_DELAY = 0;
         private final long TIMER_INTERVAL = 20000;
 
         private void startTimer() {
