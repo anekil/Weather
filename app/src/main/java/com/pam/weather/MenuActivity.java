@@ -23,6 +23,8 @@ import java.util.ArrayList;
 public class MenuActivity extends AppCompatActivity implements ApiCallback {
     EditText input;
     ChipGroup unitsGroup;
+    Chip metric;
+    Chip imperial;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,9 @@ public class MenuActivity extends AppCompatActivity implements ApiCallback {
         unitsGroup = findViewById(R.id.units);
         unitsGroup.setSelectionRequired(true);
         unitsGroup.check(R.id.standard);
+
+        metric = findViewById(R.id.metric);
+        imperial = findViewById(R.id.imperial);
 
         findViewById(R.id.nextBtn).setOnClickListener(view -> {
             FavouritesManager.currentCity = input.getText().toString().trim();
@@ -59,7 +64,8 @@ public class MenuActivity extends AppCompatActivity implements ApiCallback {
         list.setAdapter(adapter);
 
         findViewById(R.id.favouriteBtn).setOnClickListener(view -> {
-            adapter.addItem(input.getText().toString());
+            if(checkInternetConnection())
+                adapter.addItem(input.getText().toString());
         });
 
         findViewById(R.id.refreshAllBtn).setOnClickListener(view -> {
@@ -74,10 +80,13 @@ public class MenuActivity extends AppCompatActivity implements ApiCallback {
     }
 
     Units getCheckedUnits() {
-        switch (unitsGroup.getCheckedChipId()){
-            default: case 0: return Units.STANDARD;
-            case 1: return Units.METRIC;
-            case 2: return Units.IMPERIAL;
+        int checkedChipId = unitsGroup.getCheckedChipId();
+        if (checkedChipId == metric.getId()) {
+            return Units. METRIC;
+        } else if (checkedChipId == imperial.getId()) {
+            return Units.IMPERIAL;
+        } else {
+            return Units.STANDARD;
         }
     }
 
