@@ -2,8 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="background">#57679E</color>
-    <color name="dark_primary">#333045</color>
-    <color name="light_primary">#d6f1c5</color>
+    <color name="dark_primary">#083B72</color>
+    <color name="light_primary">#EDBFDC</color>
     <color name="tiles">#3CF1EBF1</color>
 </resources>

@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pam.weather.FavouritesData;
 import com.pam.weather.R;
 import com.pam.weather.weatherresponse.Weather;
 import com.pam.weather.weatherresponse.WeatherResponse;

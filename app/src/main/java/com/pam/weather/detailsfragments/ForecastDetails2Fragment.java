@@ -7,9 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.pam.weather.FavouritesData;
 import com.pam.weather.R;
-import com.pam.weather.Units;
 import com.pam.weather.weatherresponse.WeatherResponse;
 
 public class ForecastDetails2Fragment extends DetailsFragment {

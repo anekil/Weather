@@ -8,46 +8,25 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
-
 import com.pam.weather.detailsfragments.DetailsAdapter;
 import com.pam.weather.detailsfragments.DetailsFragment;
-import com.pam.weather.weatherresponse.WeatherForDay;
 import com.pam.weather.weatherresponse.WeatherResponse;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class ForecastActivity extends AppCompatActivity {
-    private static final String API_KEY = "a7801ab3bb1ab1a6e70f97bb4b575006";
-    SharedPreferences sharedPreferences;
-    String city;
-    WeatherResponse currentWeather;
+public class ForecastActivity extends AppCompatActivity implements ApiCallback {
     ViewPager2 detailsPager;
     DetailsAdapter detailsAdapter;
-    Units units;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forecast);
+        FavouritesManager.setCurrentCallback(this);
+
         loadingScreen();
-        Bundle bundle = getIntent().getExtras();
-        city = bundle.getString("cityName");
-        units = (Units) bundle.getSerializable("units");
-
-        sharedPreferences = getSharedPreferences("weather", Context.MODE_PRIVATE);
-
         setupDetailsPager();
         new RefreshTimer().startTimer();
     }
@@ -60,7 +39,7 @@ public class ForecastActivity extends AppCompatActivity {
                 super.onPageScrollStateChanged(state);
                 DetailsFragment fragment = (DetailsFragment) ForecastActivity.this.getSupportFragmentManager().findFragmentById(detailsPager.getCurrentItem());
                 if(fragment != null){
-                    fragment.loadWeather(currentWeather);
+                    fragment.loadWeather(FavouritesManager.currentWeather);
                 }
             }
         });
@@ -89,55 +68,14 @@ public class ForecastActivity extends AppCompatActivity {
 
     void updateForecast() {
         TextView text = findViewById(R.id.location);
-        text.setText(currentWeather.city.name);
+        text.setText(FavouritesManager.currentWeather.city.name);
         text = findViewById(R.id.updated_at);
-        text.setText(currentWeather.list.get(0).getDt());
+        text.setText(FavouritesManager.currentWeather.list.get(0).getDt());
 
         for (int i = 0; i < detailsAdapter.getItemCount(); i++) {
             DetailsFragment fragment = (DetailsFragment) detailsAdapter.createFragment(i);
-            fragment.loadWeather(currentWeather);
+            fragment.loadWeather(FavouritesManager.currentWeather);
         }
-    }
-
-
-    private void callAPI() {
-        WeatherApiService apiService = RetrofitClient.getRetrofitInstance().create(WeatherApiService.class);
-        Call<WeatherResponse> call = apiService.getCurrentWeatherData(city, "25", units.name(), API_KEY);
-
-        call.enqueue(new Callback<WeatherResponse>() {
-            @Override
-            public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
-                if (response.isSuccessful()) {
-                    currentWeather = response.body();
-                    if (currentWeather != null) {
-                        currentWeather.units = units;
-                        ArrayList<WeatherForDay> days = new ArrayList<>();
-                        for(int i=0; i<=24; i+=8){
-                            days.add(currentWeather.list.get(i));
-                        }
-                        currentWeather.list = days;
-                        updateForecast();
-                        dataScreen();
-                    } else {
-                        errorScreen();
-                        TextView textView = findViewById(R.id.errorText);
-                        textView.setText(Integer.toString(response.code())+ '\n' + call.request().url());
-                    }
-
-                } else {
-                    errorScreen();
-                    TextView textView = findViewById(R.id.errorText);
-                    textView.setText(Integer.toString(response.code())+ '\n' + call.request().url());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<WeatherResponse> call, Throwable t) {
-                errorScreen();
-                TextView textView = findViewById(R.id.errorText);
-                textView.setText(t.getMessage() + '\n' + call.request().url());
-            }
-        });
     }
 
     boolean checkInternetConnection(){
@@ -145,26 +83,39 @@ public class ForecastActivity extends AppCompatActivity {
         return (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED);
     }
-/*
-    private void updateFragments() {
-        ViewPager2 viewPager = findViewById(R.id.viewPager); // Replace with your ViewPager2 ID
-        YourPagerAdapter adapter = (YourPagerAdapter) viewPager.getAdapter(); // Replace with your adapter class
 
-        for (int i = 0; i < adapter.getItemCount(); i++) {
-            Fragment fragment = adapter.createFragment(i);
-            if (fragment instanceof YourFragment) {
-                YourFragment yourFragment = (YourFragment) fragment;
-                yourFragment.updateFragment();
-            }
+    void showToast(String message){
+        Toast.makeText(ForecastActivity.this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onApiResponseAll(boolean received) {
+        if(received){
+            showToast("Successfully refreshed");
+        } else {
+            showToast("Couldn't connect with API");
         }
     }
-*/
 
+    @Override
+    public void onApiResponseCurrent(boolean received) {
+        if(!received){
+            showToast("Couldn't connect with API");
+            return;
+        }
+        updateForecast();
+        dataScreen();
+    }
+
+    @Override
+    public void onApiFailure(Throwable t) {
+        showToast("Couldn't connect with API");
+    }
 
     class RefreshTimer {
         private Timer timer;
         private TimerTask timerTask;
-        private final long TIMER_DELAY = 0;
+        private final long TIMER_DELAY = 20000;
         private final long TIMER_INTERVAL = 20000;
 
         private void startTimer() {
@@ -174,17 +125,12 @@ public class ForecastActivity extends AppCompatActivity {
                 public void run() {
                     runOnUiThread(() -> {
                         Toast.makeText(ForecastActivity.this, "Timer", Toast.LENGTH_SHORT).show();
-
                         if(checkInternetConnection()){
-                            Thread callingAPI = new Thread(ForecastActivity.this::callAPI);
-                            callingAPI.start();
+                            FavouritesManager.refreshCurrent();
+                            FavouritesManager.refreshAll();
+                            Toast.makeText(ForecastActivity.this, "Automated refresh succeeded", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(ForecastActivity.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
-                            currentWeather = FavouritesData.getWeather(city);
-                            if(currentWeather != null) {
-                                updateForecast();
-                                dataScreen();
-                            }
+                            Toast.makeText(ForecastActivity.this, "Automated refresh failed", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
