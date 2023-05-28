@@ -28,6 +28,10 @@ public class ForecastActivity extends AppCompatActivity implements ApiCallback {
 
         loadingScreen();
         setupDetailsPager();
+        if(!checkInternetConnection()){
+            updateForecast();
+            dataScreen();
+        }
         new RefreshTimer().startTimer();
     }
 
@@ -70,7 +74,7 @@ public class ForecastActivity extends AppCompatActivity implements ApiCallback {
         TextView text = findViewById(R.id.location);
         text.setText(FavouritesManager.currentWeather.city.name);
         text = findViewById(R.id.updated_at);
-        text.setText(FavouritesManager.currentWeather.list.get(0).getDt());
+        text.setText(FavouritesManager.currentWeather.list.get(0).getFullDt());
 
         for (int i = 0; i < detailsAdapter.getItemCount(); i++) {
             DetailsFragment fragment = (DetailsFragment) detailsAdapter.createFragment(i);
@@ -130,7 +134,7 @@ public class ForecastActivity extends AppCompatActivity implements ApiCallback {
                             FavouritesManager.refreshAll();
                             Toast.makeText(ForecastActivity.this, "Automated refresh succeeded", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(ForecastActivity.this, "Automated refresh failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ForecastActivity.this, "No internet connection", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }

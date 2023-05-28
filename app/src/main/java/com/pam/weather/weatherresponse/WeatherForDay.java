@@ -19,6 +19,9 @@ public class WeatherForDay {
     @SerializedName("dt")
     public long dt;
 
+    public String getFullDt(){
+        return new SimpleDateFormat("HH:mm dd.MM", Locale.ENGLISH).format(new Date(dt * 1000));
+    }
     public String getDt(){
         return new SimpleDateFormat("dd.MM", Locale.ENGLISH).format(new Date(dt * 1000));
     }

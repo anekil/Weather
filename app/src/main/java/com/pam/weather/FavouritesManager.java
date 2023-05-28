@@ -4,8 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.pam.weather.weatherresponse.WeatherResponse;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,22 +52,19 @@ public final class FavouritesManager {
 
     static void addFavourite(String cityName, WeatherResponse weather){
         favourites.put(cityName, weather);
-    }
 
-    static WeatherResponse getWeather(String cityName){
-        return favourites.get(cityName);
     }
 
     static void deleteFavourite(String cityName){
         favourites.remove(cityName);
     }
 
-    static HashMap<String, WeatherResponse> getFavourites(){
-        return favourites;
-    }
-
     static void loadData(HashMap<String, WeatherResponse> data){
         favourites = data;
+    }
+
+    static ArrayList<String> loadFavouritesList(){
+        return new ArrayList<>(favourites.keySet());
     }
 
     static void refresh(String city, Units units){
@@ -78,6 +78,7 @@ public final class FavouritesManager {
     static boolean loadCurrent(){
         if (favourites.containsKey(currentCity) && favourites.get(currentCity) != null){
             currentWeather = favourites.get(currentCity);
+            currentUnits = currentWeather.units;
             return true;
         }
         return false;
@@ -85,23 +86,32 @@ public final class FavouritesManager {
 
     static void refreshAll(){
         for (Map.Entry<String, WeatherResponse> entry : favourites.entrySet()){
-            refresh(entry.getKey(), entry.getValue().units);
+            if(entry.getValue() != null)
+                refresh(entry.getKey(), entry.getValue().units);
+            else
+                refresh(entry.getKey(), Units.STANDARD);
         }
+        saveAll();
     }
 
     static void saveAll(){
         SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
         Gson gson = new Gson();
-        for (Map.Entry<String, WeatherResponse> entry : getFavourites().entrySet()) {
+        String json = gson.toJson(favourites);
+        prefsEditor.putString("favourites", json);
+        /*for (Map.Entry<String, WeatherResponse> entry : getFavourites().entrySet()) {
             String json = gson.toJson(entry.getValue());
             prefsEditor.putString(entry.getKey(), json);
-        }
+        }*/
         prefsEditor.commit();
     }
     static void loadAll(){
         Gson gson = new Gson();
-        String json = sharedPreferences.getString("favourites", "");
-        HashMap<String, WeatherResponse> data = gson.fromJson(json, HashMap.class);
-        loadData(data);
+        String json = sharedPreferences.getString("favourites", null);
+        if(json != null){
+            Type type = new TypeToken<HashMap<String, WeatherResponse>>(){}.getType();
+            HashMap<String, WeatherResponse> data = gson.fromJson(json, type);
+            loadData(data);
+        }
     }
 }

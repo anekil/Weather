@@ -5,6 +5,7 @@ import android.content.Intent;
 import com.pam.weather.weatherresponse.WeatherForDay;
 import com.pam.weather.weatherresponse.WeatherResponse;
 
+import java.time.Instant;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -43,20 +44,18 @@ public class RetrofitClient {
                             days.add(weather.list.get(i));
                         }
                         weather.list = days;
+                        weather.list.get(0).dt = Instant.now().getEpochSecond();
                         FavouritesManager.addFavourite(city, weather);
                         callback.onApiResponseAll(true);
                     } else {
-                        FavouritesManager.addFavourite(city, null);
                         callback.onApiResponseAll(false);
                     }
                 } else {
-                    FavouritesManager.addFavourite(city, null);
                     callback.onApiResponseAll(false);
                 }
             }
             @Override
             public void onFailure(Call<WeatherResponse> call, Throwable t) {
-                FavouritesManager.addFavourite(city, null);
                 callback.onApiFailure(t);
             }
         });
@@ -78,6 +77,7 @@ public class RetrofitClient {
                                 days.add(weather.list.get(i));
                             }
                             weather.list = days;
+                            weather.list.get(0).dt = Instant.now().getEpochSecond();
                             FavouritesManager.currentWeather = weather;
                             callback.onApiResponseCurrent(true);
                         }

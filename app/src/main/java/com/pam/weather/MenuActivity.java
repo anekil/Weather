@@ -30,6 +30,7 @@ public class MenuActivity extends AppCompatActivity implements ApiCallback {
         FavouritesManager.getInstance();
         FavouritesManager.setSharedPreferences(this);
         FavouritesManager.setCurrentCallback(this);
+        FavouritesManager.loadAll();
 
         input = findViewById(R.id.inputField);
         unitsGroup = findViewById(R.id.units);
@@ -62,7 +63,6 @@ public class MenuActivity extends AppCompatActivity implements ApiCallback {
         findViewById(R.id.refreshAllBtn).setOnClickListener(view -> {
             if(checkInternetConnection()){
                 FavouritesManager.refreshAll();
-                FavouritesManager.saveAll();
             } else {
                 showToast("No internet connection");
                 showToast("Loading from memory");
@@ -114,7 +114,12 @@ public class MenuActivity extends AppCompatActivity implements ApiCallback {
     }
 
     private class CitiesListAdapter extends BaseAdapter {
-        ArrayList<String> favourites = new ArrayList<>();
+        ArrayList<String> favourites;
+
+        CitiesListAdapter(){
+            favourites = FavouritesManager.loadFavouritesList();
+        }
+
         @Override
         public int getCount() {
             return favourites.size();
