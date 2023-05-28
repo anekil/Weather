@@ -17,8 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.chip.ChipGroup;
-import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.gson.Gson;
+import com.pam.weather.weatherresponse.WeatherForDay;
 import com.pam.weather.weatherresponse.WeatherResponse;
 
 import java.util.ArrayList;
@@ -32,29 +32,24 @@ import retrofit2.Response;
 public class MenuActivity extends AppCompatActivity {
     private static final String API_KEY = "a7801ab3bb1ab1a6e70f97bb4b575006";
     EditText input;
-    Units units;
+    ChipGroup unitsGroup;
+    SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu);
 
+        sharedPreferences = getSharedPreferences("weather", Context.MODE_PRIVATE);
         input = findViewById(R.id.inputField);
-
-        ChipGroup unitsGroup = findViewById(R.id.units);
+        unitsGroup = findViewById(R.id.units);
         unitsGroup.setSelectionRequired(true);
-        unitsGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            switch (checkedId){
-                case 0: units = Units.STANDARD; break;
-                case 1: units = Units.METRIC; break;
-                case 2: units = Units.IMPERIAL; break;
-            }
-        });
 
         findViewById(R.id.nextBtn).setOnClickListener(view -> {
             Intent intent = new Intent(MenuActivity.this, ForecastActivity.class);
             String cityName = input.getText().toString().trim();
             intent.putExtra("cityName", cityName);
-            intent.putExtra("units", units);
+            intent.putExtra("units", getCheckedUnits());
             startActivity(intent);
         });
 
@@ -66,26 +61,36 @@ public class MenuActivity extends AppCompatActivity {
             adapter.addItem(input.getText().toString());
         });
 
-        findViewById(R.id.refreshBtn).setOnClickListener(view -> {
+        findViewById(R.id.refreshAllBtn).setOnClickListener(view -> {
             if(checkInternetConnection()){
                 refreshFavourites();
                 saveFavourites();
             } else {
+                showError("No internet connection");
+                showError("Loading from memory");
                 loadFavourites();
             }
         });
     }
 
+    Units getCheckedUnits() {
+        switch (unitsGroup.getCheckedChipId()){
+            default: case 0: return Units.STANDARD;
+            case 1: return Units.METRIC;
+            case 2: return Units.IMPERIAL;
+        }
+    }
+
     void refreshFavourites(){
         WeatherApiService apiService = RetrofitClient.getRetrofitInstance().create(WeatherApiService.class);
         for (Map.Entry<String, WeatherResponse> entry : FavouritesData.getFavourites().entrySet()) {
-            Call<WeatherResponse> call = apiService.getCurrentWeatherData(entry.getKey(), "4", units.name(), API_KEY);
+            Call<WeatherResponse> call = apiService.getCurrentWeatherData(entry.getKey(), "4", getCheckedUnits().name(), API_KEY);
             call.enqueue(new Callback<WeatherResponse>() {
                 @Override
                 public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
                     if (response.isSuccessful()) {
                         WeatherResponse weatherResponse = response.body();
-                        weatherResponse.units = units;
+                        weatherResponse.units = getCheckedUnits();
                         FavouritesData.addFavourite(entry.getKey(), weatherResponse);
                     }
                 }
@@ -99,7 +104,7 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     void saveFavourites(){
-        SharedPreferences.Editor prefsEditor = getPreferences(MODE_PRIVATE).edit();
+        SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
         Gson gson = new Gson();
         for (Map.Entry<String, WeatherResponse> entry : FavouritesData.getFavourites().entrySet()) {
             String json = gson.toJson(entry.getValue());
@@ -107,12 +112,54 @@ public class MenuActivity extends AppCompatActivity {
         }
         prefsEditor.commit();
     }
-
     void loadFavourites(){
         Gson gson = new Gson();
-        String json = getPreferences(MODE_PRIVATE).getString("favourites", "");
+        String json = sharedPreferences.getString("favourites", "");
         HashMap<String, WeatherResponse> data = gson.fromJson(json, HashMap.class);
         FavouritesData.loadData(data);
+    }
+
+    boolean checkInternetConnection(){
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        return (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED);
+    }
+
+    void showError(String error){
+        Toast.makeText(MenuActivity.this, error, Toast.LENGTH_SHORT).show();
+    }
+    void getNewWeather(String cityName, Units units) throws APIConnectionException {
+        WeatherApiService apiService = RetrofitClient.getRetrofitInstance().create(WeatherApiService.class);
+        Call<WeatherResponse> call = apiService.getCurrentWeatherData(cityName, "25", units.name(), API_KEY);
+        call.enqueue(new Callback<WeatherResponse>() {
+            @Override
+            public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
+                if (response.isSuccessful()) {
+                    WeatherResponse weatherResponse = response.body();
+                    if (weatherResponse != null) {
+                        weatherResponse.units = units;
+                        ArrayList<WeatherForDay> days = new ArrayList<>();
+                        for(int i=0; i<=24; i+=8){
+                            days.add(weatherResponse.list.get(i));
+                        }
+                        weatherResponse.list = days;
+                        FavouritesManager.addFavourite(cityName, weatherResponse);
+                    } else {
+                        FavouritesManager.addFavourite(cityName, null);
+                        showError("Connecting with API went wrong");
+                    }
+                } else {
+                    FavouritesManager.addFavourite(cityName, null);
+                    showError("Connecting with API went wrong");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WeatherResponse> call, Throwable t) {
+                FavouritesManager.addFavourite(cityName, null);
+                showError("Connecting with API went wrong");
+            }
+        });
     }
 
     private class CitiesListAdapter extends BaseAdapter {
@@ -157,12 +204,6 @@ public class MenuActivity extends AppCompatActivity {
             convertView.findViewById(R.id.deleteBtn).setOnClickListener(v -> deleteItem(position));
             return convertView;
         }
-    }
-
-    boolean checkInternetConnection(){
-        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        return (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED);
     }
 }
 

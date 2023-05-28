@@ -1,11 +1,19 @@
 package com.pam.weather;
 
+import android.widget.TextView;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.pam.weather.weatherresponse.WeatherForDay;
+import com.pam.weather.weatherresponse.WeatherResponse;
 
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 

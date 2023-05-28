@@ -50,7 +50,7 @@
     </com.google.android.material.chip.ChipGroup>
 
     <ImageButton
-        android:id="@+id/refreshBtn"
+        android:id="@+id/refreshAllBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="?colorPrimary"
