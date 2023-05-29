@@ -83,6 +83,12 @@ public class MenuActivity extends AppCompatActivity implements ApiCallback {
             adapter.clear();
             FavouritesManager.clearAll();
         });
+
+        if(checkInternetConnection()){
+            FavouritesManager.refreshAll();
+        } else {
+            showToast("No internet connection - Loading from memory");
+        }
     }
 
     Units getCheckedUnits() {
