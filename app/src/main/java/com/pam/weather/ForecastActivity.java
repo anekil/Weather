@@ -49,9 +49,12 @@ public class ForecastActivity extends AppCompatActivity implements ApiCallback {
 
         loadingScreen();
         setupDetailsPager();
+
         if(!checkInternetConnection()){
             updateForecast();
             dataScreen();
+        } else {
+            FavouritesManager.refreshCurrent();
         }
         refreshTimer = new RefreshTimer();
         refreshTimer.startTimer();
@@ -131,7 +134,8 @@ public class ForecastActivity extends AppCompatActivity implements ApiCallback {
         text = findViewById(R.id.updated_at);
         text.setText(FavouritesManager.currentWeather.list.get(0).getFullDt());
         text = findViewById(R.id.lon);
-        text.setText(Math.round(FavouritesManager.currentWeather.city.coord.lon * 100.0) / 100.0 + " ");
+        String lon = Math.round(FavouritesManager.currentWeather.city.coord.lon * 100.0) / 100.0 + " ";
+        text.setText(lon);
         text = findViewById(R.id.lat);
         text.setText(String.valueOf(Math.round(FavouritesManager.currentWeather.city.coord.lat * 100.0) / 100.0));
     }
@@ -172,7 +176,7 @@ public class ForecastActivity extends AppCompatActivity implements ApiCallback {
     class RefreshTimer {
         private Timer timer;
         private TimerTask timerTask;
-        private final long TIMER_DELAY = 200;
+        private final long TIMER_DELAY = 100;
         private final long TIMER_INTERVAL = 20000;
 
         private void startTimer() {
