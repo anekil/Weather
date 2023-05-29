@@ -7,6 +7,7 @@ import com.pam.weather.weatherresponse.WeatherResponse;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;

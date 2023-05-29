@@ -8,6 +8,8 @@ import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 
+import com.pam.weather.weatherresponse.WeatherResponse;
+
 import java.util.ArrayList;
 
 public class DetailsAdapter extends FragmentStateAdapter {
@@ -30,5 +32,15 @@ public class DetailsAdapter extends FragmentStateAdapter {
     @Override
     public int getItemCount() {
         return fragmentList.size();
+    }
+    @Override
+    public long getItemId(int position) {
+        return fragmentList.get(position).hashCode();
+    }
+
+    public void updateFragments(WeatherResponse weather) {
+        for (DetailsFragment fragment : fragmentList) {
+            fragment.loadWeather(weather);
+        }
     }
 }

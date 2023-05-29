@@ -29,7 +29,7 @@ public class MenuActivity extends AppCompatActivity implements ApiCallback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.menu);
+        setContentView(R.layout.activity_menu);
 
         FavouritesManager.getInstance();
         FavouritesManager.setSharedPreferences(this);
@@ -48,8 +48,7 @@ public class MenuActivity extends AppCompatActivity implements ApiCallback {
             FavouritesManager.currentCity = input.getText().toString().trim();
             FavouritesManager.currentUnits = getCheckedUnits();
             if(!checkInternetConnection()) {
-                showToast("No internet connection");
-                showToast("Loading from memory");
+                showToast("No internet connection - Loading from memory");
                 if (!FavouritesManager.loadCurrent()) {
                     showToast("Couldn't find in memory");
                     return;
@@ -65,17 +64,23 @@ public class MenuActivity extends AppCompatActivity implements ApiCallback {
 
         findViewById(R.id.favouriteBtn).setOnClickListener(view -> {
             if(checkInternetConnection())
-                adapter.addItem(input.getText().toString());
+                adapter.addItem(input.getText().toString().trim());
+            else
+                showToast("No internet connection");
         });
 
         findViewById(R.id.refreshAllBtn).setOnClickListener(view -> {
             if(checkInternetConnection()){
                 FavouritesManager.refreshAll();
             } else {
-                showToast("No internet connection");
-                showToast("Loading from memory");
+                showToast("No internet connection - Loading from memory");
                 FavouritesManager.loadAll();
             }
+        });
+
+        findViewById(R.id.clearBtn).setOnClickListener(view -> {
+            adapter.clear();
+            FavouritesManager.clearAll();
         });
     }
 
@@ -152,10 +157,15 @@ public class MenuActivity extends AppCompatActivity implements ApiCallback {
             notifyDataSetChanged();
         }
 
+        public void clear(){
+            favourites.clear();
+            notifyDataSetChanged();
+        }
+
         public void addItem(String cityName) {
             if(favourites.contains(cityName))
                 return;
-            FavouritesManager.addFavourite(cityName, null);
+            FavouritesManager.refresh(cityName, getCheckedUnits());
             favourites.add(cityName);
             notifyDataSetChanged();
         }
