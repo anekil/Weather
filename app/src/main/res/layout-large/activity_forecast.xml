@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Location"
-            android:textSize="24sp"
+            android:textSize="@dimen/text_size_large"
             app:layout_constraintEnd_toStartOf="@+id/refreshAllBtn"
             app:layout_constraintStart_toEndOf="@+id/lon"
             app:layout_constraintTop_toTopOf="parent" />
@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Updated at"
-            android:textSize="14sp"
+            android:textSize="@dimen/text_size_small"
             app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
             app:layout_constraintEnd_toStartOf="@+id/refreshAllBtn"
             app:layout_constraintStart_toEndOf="@+id/lat"
@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="lon"
-            android:textSize="14sp"
+            android:textSize="@dimen/text_size_small"
             app:layout_constraintBottom_toTopOf="@+id/lat"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -63,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="lat"
-            android:textSize="14sp"
+            android:textSize="@dimen/text_size_small"
             app:layout_constraintBottom_toBottomOf="@+id/updated_at"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -73,6 +73,7 @@
             android:layout_height="0dp"
             android:layout_weight="6"
             android:orientation="vertical"
+            android:padding="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -84,16 +85,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <androidx.viewpager2.widget.ViewPager2
+                <FrameLayout
                     android:id="@+id/detailsPager1"
                     android:paddingTop="10dp"
+                    android:name="com.pam.weather.detailsfragments.DetailsFragment"
                     android:layout_weight="1.0"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-                <androidx.viewpager2.widget.ViewPager2
+                <FrameLayout
                     android:id="@+id/detailsPager2"
                     android:paddingTop="10dp"
+                    android:name="com.pam.weather.detailsfragments.DetailsFragment"
                     android:layout_weight="1.0"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
@@ -105,16 +108,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <androidx.viewpager2.widget.ViewPager2
+                <FrameLayout
                     android:id="@+id/detailsPager3"
                     android:paddingTop="10dp"
+                    android:name="com.pam.weather.detailsfragments.DetailsFragment"
                     android:layout_weight="1.0"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-                <androidx.viewpager2.widget.ViewPager2
+                <FrameLayout
                     android:id="@+id/detailsPager4"
                     android:paddingTop="10dp"
+                    android:name="com.pam.weather.detailsfragments.DetailsFragment"
                     android:layout_weight="1.0"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />

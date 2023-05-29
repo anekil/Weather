@@ -17,7 +17,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="" />
+            android:text=""
+            android:textSize="@dimen/text_size_large"/>
 
         <ImageView
             android:id="@+id/status_image"
@@ -39,7 +40,7 @@
             android:fontFamily="sans-serif-thin"
             android:gravity="center"
             android:text=""
-            android:textSize="70sp"/>
+            android:textSize="@dimen/text_size_xlarge"/>
 
 
         <TextView

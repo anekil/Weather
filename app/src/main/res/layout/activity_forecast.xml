@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Location"
-            android:textSize="24sp"
+            android:textSize="@dimen/text_size_large"
             app:layout_constraintEnd_toStartOf="@+id/refreshAllBtn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Updated at"
-            android:textSize="14sp"
+            android:textSize="@dimen/text_size_small"
             app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
             app:layout_constraintEnd_toStartOf="@+id/refreshAllBtn"
             app:layout_constraintTop_toBottomOf="@+id/location" />
@@ -52,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="lon"
-            android:textSize="14sp"
+            android:textSize="@dimen/text_size_small"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/lat" />
 
@@ -61,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="lat"
-            android:textSize="14sp"
+            android:textSize="@dimen/text_size_small"
             app:layout_constraintStart_toEndOf="@+id/lon"
             app:layout_constraintTop_toTopOf="@+id/updated_at" />
 
@@ -70,6 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="6"
+            android:padding="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
