@@ -67,22 +67,60 @@
             app:layout_constraintBottom_toBottomOf="@+id/updated_at"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="6"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/refreshAllBtn">
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/detailsPager"
-                android:paddingTop="10dp"
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_weight="1.0"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </RelativeLayout>
+                android:layout_height="wrap_content">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/detailsPager1"
+                    android:paddingTop="10dp"
+                    android:layout_weight="1.0"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/detailsPager2"
+                    android:paddingTop="10dp"
+                    android:layout_weight="1.0"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_weight="1.0"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/detailsPager3"
+                    android:paddingTop="10dp"
+                    android:layout_weight="1.0"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/detailsPager4"
+                    android:paddingTop="10dp"
+                    android:layout_weight="1.0"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

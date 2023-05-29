@@ -9,9 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 import com.pam.weather.detailsfragments.DetailsAdapter;
 import com.pam.weather.detailsfragments.DetailsFragment;
@@ -87,6 +85,12 @@ public class ForecastActivity extends AppCompatActivity implements ApiCallback {
     }
 
     void updateForecast() {
+        updateHeading();
+        detailsAdapter.updateFragments(FavouritesManager.currentWeather);
+        detailsAdapter.notifyDataSetChanged();
+    }
+
+    void updateHeading(){
         TextView text = findViewById(R.id.location);
         String location = FavouritesManager.currentWeather.city.name + ", " + FavouritesManager.currentWeather.city.country;
         text.setText(location);
@@ -96,9 +100,6 @@ public class ForecastActivity extends AppCompatActivity implements ApiCallback {
         text.setText(Math.round(FavouritesManager.currentWeather.city.coord.lon * 100.0) / 100.0 + " ");
         text = findViewById(R.id.lat);
         text.setText(String.valueOf(Math.round(FavouritesManager.currentWeather.city.coord.lat * 100.0) / 100.0));
-
-        detailsAdapter.updateFragments(FavouritesManager.currentWeather);
-        detailsAdapter.notifyDataSetChanged();
     }
 
     boolean checkInternetConnection(){
@@ -112,33 +113,32 @@ public class ForecastActivity extends AppCompatActivity implements ApiCallback {
     }
 
     @Override
-    public void onApiResponseAll(boolean received) {
-        if(received){
-            showToast("Successfully refreshed");
-        } else {
-            showToast("Couldn't connect with API");
-        }
+    public void onApiResponseAll() {
+        showToast("Successfully refreshed");
     }
 
     @Override
-    public void onApiResponseCurrent(boolean received) {
-        if(!received){
-            showToast("Couldn't connect with API");
-            return;
-        }
+    public void onApiResponseCurrent() {
         updateForecast();
         dataScreen();
+        FavouritesManager.refreshAll();
     }
 
     @Override
-    public void onApiFailure(Throwable t) {
+    public void onCityNotFound(String city) {
+        showToast("Couldn't find city");
+        onBackPressed();
+    }
+
+    @Override
+    public void onApiFailure() {
         showToast("Couldn't connect with API");
     }
 
     class RefreshTimer {
         private Timer timer;
         private TimerTask timerTask;
-        private final long TIMER_DELAY = 20;
+        private final long TIMER_DELAY = 200;
         private final long TIMER_INTERVAL = 20000;
 
         private void startTimer() {
@@ -149,7 +149,6 @@ public class ForecastActivity extends AppCompatActivity implements ApiCallback {
                     runOnUiThread(() -> {
                         if(checkInternetConnection()){
                             FavouritesManager.refreshCurrent();
-                            FavouritesManager.refreshAll();
                         } else {
                             showToast("No internet connection");
                         }
