@@ -25,6 +25,7 @@ public class MenuActivity extends AppCompatActivity implements ApiCallback {
     ChipGroup unitsGroup;
     Chip metric;
     Chip imperial;
+    CitiesListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +60,7 @@ public class MenuActivity extends AppCompatActivity implements ApiCallback {
         });
 
         ListView list = findViewById(R.id.citiesList);
-        CitiesListAdapter adapter = new CitiesListAdapter();
+        adapter = new CitiesListAdapter();
         list.setAdapter(adapter);
 
         findViewById(R.id.favouriteBtn).setOnClickListener(view -> {
@@ -107,25 +108,24 @@ public class MenuActivity extends AppCompatActivity implements ApiCallback {
 
 
     @Override
-    public void onApiResponseAll(boolean received) {
-        if(received){
-            showToast("Successfully refreshed");
-        } else {
-            showToast("Couldn't connect with API");
-        }
+    public void onApiResponseAll() {
+        showToast("Successfully refreshed");
     }
 
     @Override
-    public void onApiResponseCurrent(boolean received) {
-        if(received){
-            Intent intent = new Intent(MenuActivity.this, ForecastActivity.class);
-            startActivity(intent);
-        }
-        showToast("Couldn't connect with API");
+    public void onApiResponseCurrent() {
+        Intent intent = new Intent(MenuActivity.this, ForecastActivity.class);
+        startActivity(intent);
     }
 
     @Override
-    public void onApiFailure(Throwable t) {
+    public void onCityNotFound(String city) {
+        showToast("Couldn't find city");
+        adapter.deleteItem(city);
+    }
+
+    @Override
+    public void onApiFailure() {
         showToast("Couldn't connect with API");
     }
 
@@ -154,6 +154,12 @@ public class MenuActivity extends AppCompatActivity implements ApiCallback {
         public void deleteItem(int position) {
             FavouritesManager.deleteFavourite(favourites.get(position));
             favourites.remove(position);
+            notifyDataSetChanged();
+        }
+
+        public void deleteItem(String cityName) {
+            FavouritesManager.deleteFavourite(cityName);
+            favourites.remove(cityName);
             notifyDataSetChanged();
         }
 
