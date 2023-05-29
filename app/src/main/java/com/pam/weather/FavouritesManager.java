@@ -44,7 +44,6 @@ public final class FavouritesManager {
     static void setCurrentCallback(ApiCallback callback){
         currentCallback = callback;
     }
-
     static void setSharedPreferences(Context context){
         sharedPreferences = context.getSharedPreferences("weather", Context.MODE_PRIVATE);
     }
@@ -64,6 +63,11 @@ public final class FavouritesManager {
 
     static ArrayList<String> loadFavouritesList(){
         return new ArrayList<>(favourites.keySet());
+    }
+
+    static void clearAll(){
+        favourites.clear();
+        sharedPreferences.edit().clear().commit();
     }
 
     static void refresh(String city, Units units){

@@ -29,7 +29,7 @@ public class MenuActivity extends AppCompatActivity implements ApiCallback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.menu);
+        setContentView(R.layout.activity_menu);
 
         FavouritesManager.getInstance();
         FavouritesManager.setSharedPreferences(this);
@@ -66,6 +66,8 @@ public class MenuActivity extends AppCompatActivity implements ApiCallback {
         findViewById(R.id.favouriteBtn).setOnClickListener(view -> {
             if(checkInternetConnection())
                 adapter.addItem(input.getText().toString());
+            else
+                showToast("No internet connection");
         });
 
         findViewById(R.id.refreshAllBtn).setOnClickListener(view -> {
@@ -76,6 +78,11 @@ public class MenuActivity extends AppCompatActivity implements ApiCallback {
                 showToast("Loading from memory");
                 FavouritesManager.loadAll();
             }
+        });
+
+        findViewById(R.id.clearBtn).setOnClickListener(view -> {
+            adapter.clear();
+            FavouritesManager.clearAll();
         });
     }
 
@@ -149,6 +156,12 @@ public class MenuActivity extends AppCompatActivity implements ApiCallback {
         public void deleteItem(int position) {
             FavouritesManager.deleteFavourite(favourites.get(position));
             favourites.remove(position);
+            notifyDataSetChanged();
+        }
+
+        public void clear(){
+
+            favourites.clear();
             notifyDataSetChanged();
         }
 

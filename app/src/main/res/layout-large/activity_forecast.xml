@@ -10,22 +10,22 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/mainContainer"
+        android:orientation="vertical"
+        android:weightSum="7"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="visible"
-        android:weightSum="7">
+        android:visibility="visible">
 
         <ImageButton
             android:id="@+id/refreshAllBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="?colorPrimary"
-            android:contentDescription="refresh"
             android:src="@drawable/refresh"
             app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="refresh" />
 
         <TextView
             android:id="@+id/location"
@@ -34,7 +34,7 @@
             android:text="Location"
             android:textSize="24sp"
             app:layout_constraintEnd_toStartOf="@+id/refreshAllBtn"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/lon"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -45,6 +45,7 @@
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
             app:layout_constraintEnd_toStartOf="@+id/refreshAllBtn"
+            app:layout_constraintStart_toEndOf="@+id/lat"
             app:layout_constraintTop_toBottomOf="@+id/location" />
 
         <TextView
@@ -53,8 +54,9 @@
             android:layout_height="wrap_content"
             android:text="lon"
             android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/lat"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/lat" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/lat"
@@ -62,8 +64,8 @@
             android:layout_height="wrap_content"
             android:text="lat"
             android:textSize="14sp"
-            app:layout_constraintStart_toEndOf="@+id/lon"
-            app:layout_constraintTop_toTopOf="@+id/updated_at" />
+            app:layout_constraintBottom_toBottomOf="@+id/updated_at"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <RelativeLayout
             android:id="@+id/relativeLayout"
@@ -77,9 +79,9 @@
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/detailsPager"
+                android:paddingTop="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingTop="10dp" />
+                android:layout_height="match_parent" />
         </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

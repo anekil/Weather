@@ -23,11 +23,11 @@ public class ForecastDetails2Fragment extends DetailsFragment {
             return;
 
         TextView text = rootView.findViewById(R.id.pressure);
-        text.setText(weather.list.get(0).main.pressure + "hPa");
+        text.setText(Math.round(weather.list.get(0).main.pressure) + "hPa");
         text = rootView.findViewById(R.id.humidity);
-        text.setText(weather.list.get(0).main.humidity + "%");
+        text.setText(Math.round(weather.list.get(0).main.humidity) + "%");
         text = rootView.findViewById(R.id.visibility);
-        text.setText(weather.list.get(0).visibility + "m");
+        text.setText(Math.round(weather.list.get(0).visibility) + "m");
         text = rootView.findViewById(R.id.wind);
         text.setText(weather.list.get(0).wind.speed + weather.units.speed_label);
     }

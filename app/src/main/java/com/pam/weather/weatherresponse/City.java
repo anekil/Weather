@@ -11,6 +11,8 @@ public class City {
     public String name;
     @SerializedName("coord")
     public Coord coord;
+    @SerializedName("country")
+    public String country;
     @SerializedName("sunrise")
     public long sunrise;
     @SerializedName("sunset")
