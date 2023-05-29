@@ -10,13 +10,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 import com.pam.weather.detailsfragments.DetailsAdapter;
 import com.pam.weather.detailsfragments.DetailsFragment;
+import com.pam.weather.detailsfragments.ForecastDetails1Fragment;
+import com.pam.weather.detailsfragments.ForecastDetails2Fragment;
+import com.pam.weather.detailsfragments.ForecastGeneralFragment;
+import com.pam.weather.detailsfragments.ForecastNextDaysFragment;
+
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class ForecastActivity extends AppCompatActivity implements ApiCallback {
+    boolean isLarge = false;
+    ArrayList<DetailsFragment> detailsFragments;
     ViewPager2 detailsPager;
     DetailsAdapter detailsAdapter;
     RefreshTimer refreshTimer;
@@ -26,6 +36,10 @@ public class ForecastActivity extends AppCompatActivity implements ApiCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forecast);
         FavouritesManager.setCurrentCallback(this);
+
+        int screenSize = getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
+        if(screenSize == Configuration.SCREENLAYOUT_SIZE_LARGE || screenSize == Configuration.SCREENLAYOUT_SIZE_XLARGE)
+            isLarge = true;
 
         findViewById(R.id.refreshAllBtn).setOnClickListener((view) -> {
             updateForecast();
@@ -50,27 +64,41 @@ public class ForecastActivity extends AppCompatActivity implements ApiCallback {
     }
 
     private void setupDetailsPager() {
-        detailsPager = findViewById(R.id.detailsPager);
-        detailsPager.setOffscreenPageLimit(3);
-        detailsPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                super.onPageScrollStateChanged(state);
-                DetailsFragment fragment = (DetailsFragment) ForecastActivity.this.getSupportFragmentManager().findFragmentById(detailsPager.getCurrentItem());
-                if(fragment != null){
-                    fragment.loadWeather(FavouritesManager.currentWeather);
+       if(isLarge){
+           detailsFragments = new ArrayList<>();
+           FragmentManager fragmentManager = getSupportFragmentManager();
+           FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+           ForecastGeneralFragment fragment1 = new ForecastGeneralFragment();
+           fragmentTransaction.replace(R.id.detailsPager1, fragment1);
+           detailsFragments.add(fragment1);
+           ForecastNextDaysFragment fragment4 = new ForecastNextDaysFragment();
+           fragmentTransaction.replace(R.id.detailsPager2, fragment4);
+           detailsFragments.add(fragment4);
+           ForecastDetails1Fragment fragment2 = new ForecastDetails1Fragment();
+           fragmentTransaction.replace(R.id.detailsPager3, fragment2);
+           detailsFragments.add(fragment2);
+           ForecastDetails2Fragment fragment3 = new ForecastDetails2Fragment();
+           fragmentTransaction.replace(R.id.detailsPager4, fragment3);
+           detailsFragments.add(fragment3);
+
+           fragmentTransaction.commit();
+        } else {
+            detailsPager = findViewById(R.id.detailsPager);
+            detailsPager.setOffscreenPageLimit(3);
+            detailsPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                @Override
+                public void onPageScrollStateChanged(int state) {
+                    super.onPageScrollStateChanged(state);
+                    DetailsFragment fragment = (DetailsFragment) ForecastActivity.this.getSupportFragmentManager().findFragmentById(detailsPager.getCurrentItem());
+                    if(fragment != null){
+                        fragment.loadWeather(FavouritesManager.currentWeather);
+                    }
                 }
-            }
-        });
-        detailsAdapter = new DetailsAdapter(getSupportFragmentManager(), getLifecycle());
-        detailsPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
-
-        int screenSize = getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
-        if(screenSize == Configuration.SCREENLAYOUT_SIZE_LARGE || screenSize == Configuration.SCREENLAYOUT_SIZE_XLARGE){
-            System.out.println("Tablet");
+            });
+            detailsAdapter = new DetailsAdapter(getSupportFragmentManager(), getLifecycle());
+            detailsPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+            detailsPager.setAdapter(detailsAdapter);
         }
-
-        detailsPager.setAdapter(detailsAdapter);
     }
 
 
@@ -86,8 +114,14 @@ public class ForecastActivity extends AppCompatActivity implements ApiCallback {
 
     void updateForecast() {
         updateHeading();
-        detailsAdapter.updateFragments(FavouritesManager.currentWeather);
-        detailsAdapter.notifyDataSetChanged();
+        if(isLarge){
+            for(DetailsFragment fragment : detailsFragments){
+                fragment.loadWeather(FavouritesManager.currentWeather);
+            }
+        } else {
+            detailsAdapter.updateFragments(FavouritesManager.currentWeather);
+            detailsAdapter.notifyDataSetChanged();
+        }
     }
 
     void updateHeading(){

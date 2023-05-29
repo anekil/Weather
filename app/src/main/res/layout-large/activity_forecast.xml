@@ -84,16 +84,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <androidx.viewpager2.widget.ViewPager2
+                <FrameLayout
                     android:id="@+id/detailsPager1"
                     android:paddingTop="10dp"
+                    android:name="com.pam.weather.detailsfragments.DetailsFragment"
                     android:layout_weight="1.0"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-                <androidx.viewpager2.widget.ViewPager2
+                <FrameLayout
                     android:id="@+id/detailsPager2"
                     android:paddingTop="10dp"
+                    android:name="com.pam.weather.detailsfragments.DetailsFragment"
                     android:layout_weight="1.0"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
@@ -105,16 +107,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <androidx.viewpager2.widget.ViewPager2
+                <FrameLayout
                     android:id="@+id/detailsPager3"
                     android:paddingTop="10dp"
+                    android:name="com.pam.weather.detailsfragments.DetailsFragment"
                     android:layout_weight="1.0"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-                <androidx.viewpager2.widget.ViewPager2
+                <FrameLayout
                     android:id="@+id/detailsPager4"
                     android:paddingTop="10dp"
+                    android:name="com.pam.weather.detailsfragments.DetailsFragment"
                     android:layout_weight="1.0"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
