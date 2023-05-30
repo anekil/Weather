@@ -7,6 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.pam.weather.FavouritesManager;
 import com.pam.weather.R;
 import com.pam.weather.weatherresponse.WeatherResponse;
 
@@ -16,6 +20,12 @@ public class ForecastDetails1Fragment extends DetailsFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_forecast_details1, container, false);
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        this.loadWeather(FavouritesManager.currentWeather);
     }
 
     public void loadWeather(WeatherResponse weather){

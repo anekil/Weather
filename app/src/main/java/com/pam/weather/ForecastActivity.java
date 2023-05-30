@@ -38,6 +38,11 @@ public class ForecastActivity extends AppCompatActivity implements ApiCallback {
         setContentView(R.layout.activity_forecast);
         FavouritesManager.setCurrentCallback(this);
 
+        if(FavouritesManager.currentCity.equals("") || FavouritesManager.currentCity.equals("")){
+            onCityNotFound("");
+            return;
+        }
+
         int screenSize = getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
         if(screenSize == Configuration.SCREENLAYOUT_SIZE_LARGE || screenSize == Configuration.SCREENLAYOUT_SIZE_XLARGE)
             isLarge = true;
@@ -54,8 +59,6 @@ public class ForecastActivity extends AppCompatActivity implements ApiCallback {
         if(!checkInternetConnection()){
             updateForecast();
             dataScreen();
-        } else {
-            FavouritesManager.refreshCurrent();
         }
         refreshTimer = new RefreshTimer();
         refreshTimer.startTimer();
@@ -65,6 +68,12 @@ public class ForecastActivity extends AppCompatActivity implements ApiCallback {
     protected void onPause() {
         super.onPause();
         refreshTimer.stopTimer();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshTimer.startTimer();
     }
 
     private void setupDetailsPager() {
@@ -182,11 +191,14 @@ public class ForecastActivity extends AppCompatActivity implements ApiCallback {
     class RefreshTimer {
         private Timer timer;
         private TimerTask timerTask;
-        private final long TIMER_DELAY = 100;
+        private final long TIMER_DELAY = 0;
         private final long TIMER_INTERVAL = 20000;
 
-        private void startTimer() {
+        RefreshTimer(){
             timer = new Timer();
+        }
+
+        private void startTimer() {
             timerTask = new TimerTask() {
                 @Override
                 public void run() {

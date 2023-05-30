@@ -28,7 +28,7 @@ public class RetrofitClient {
     }
 
     public void updateFavourite(ApiCallback callback, String city, Units units) {
-        if(city.equals("")){
+        if(city == null || city.equals("") || city.equals(" ")){
             callback.onCityNotFound(city); return;
         }
 

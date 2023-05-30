@@ -18,7 +18,7 @@ public final class FavouritesManager {
     private static volatile FavouritesManager instance;
     static HashMap<String, WeatherResponse> favourites;
     static String currentCity;
-    static WeatherResponse currentWeather = null;
+    public static WeatherResponse currentWeather = null;
     static Units currentUnits;
     static SharedPreferences sharedPreferences;
     static ApiCallback currentCallback;
