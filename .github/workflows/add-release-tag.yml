@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install semver
+        run: npm install --global semver
+
       - name: Checkout code
         uses: actions/checkout@v2
 
