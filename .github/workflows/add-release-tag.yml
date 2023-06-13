@@ -1,19 +1,37 @@
-name: Add Release Tag
+name: Tag Release on Push
 
 on:
   push:
     branches:
       - release
+
 jobs:
-  release-on-push:
+  tag-release:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Tag/Release on Push Action
-        uses: rymndhng/release-on-push-action@v0.27.0
-        
-      - uses: rymndhng/release-on-push-action@master
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Tag Release
+        uses: actions/github-script@v4
         with:
-          bump_version_scheme: minor
-          release_body: "Automated release"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const tag = 'v' + process.env.GITHUB_SHA.substring(0, 8);
+            const { octokit } = require('@octokit/core');
+            const MyOctokit = octokit.plugin(require('octokit-create-pull-request'));
+            const octokitWithPR = new MyOctokit({ auth: process.env.GITHUB_TOKEN });
+            const { data } = await octokitWithPR.request('POST /repos/{owner}/{repo}/git/tags', {
+              owner: process.env.GITHUB_REPOSITORY_OWNER,
+              repo: process.env.GITHUB_REPOSITORY,
+              tag: tag,
+              message: 'Release ' + tag,
+              object: process.env.GITHUB_SHA,
+              type: 'commit'
+            });
+            await octokitWithPR.request('POST /repos/{owner}/{repo}/git/refs', {
+              owner: process.env.GITHUB_REPOSITORY_OWNER,
+              repo: process.env.GITHUB_REPOSITORY,
+              ref: 'refs/tags/' + tag,
+              sha: data.sha
+            });
