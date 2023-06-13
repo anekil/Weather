@@ -3,34 +3,15 @@ name: Add Release Tag
 on:
   push:
     branches:
-      - release
+      - master
 
 jobs:
-  add-release-tag:
+  release-on-push:
     runs-on: ubuntu-latest
-
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Install semver
-        run: npm install --global semver
-
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Get Latest Tag
-        id: get-latest-tag
-        run: echo ::set-output name=tag::$(git describe --tags --abbrev=0)
-
-      - name: Increment Version
-        id: increment-version
-        run: |
-          previous_version=${{ steps.get-latest-tag.outputs.tag }}
-          new_version=$(semver bump patch $previous_version)
-          echo "::set-output name=new_version::$new_version"
-
-      - name: Create Release Tag
-        if: steps.increment-version.outputs.new_version != ''
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git tag -a v${{ steps.increment-version.outputs.new_version }} -m "Release ${{ steps.increment-version.outputs.new_version }}"
-          git push origin v${{ steps.increment-version.outputs.new_version }}
+      - uses: rymndhng/release-on-push-action@master
+        with:
+          bump_version_scheme: minor
+          release_body: "Automated release"
