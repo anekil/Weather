@@ -13,9 +13,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       
-      - name: Tag Release
-        uses: "s-bridges/tag-release-on-push-action@v1.0.2"
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          tag_prefix: "v"
-          release_name: "Release ${{ github.sha }}"
-          release_body: "Release ${{ github.sha }}"
+          node-version: '14'
+      
+      - name: Install Dependencies
+        run: npm install
+      
+      - name: Tag Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx create-release@1
+          prerelease: false
+          draft: false
+          files: ''
