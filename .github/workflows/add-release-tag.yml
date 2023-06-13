@@ -3,14 +3,16 @@ name: Add Release Tag
 on:
   push:
     branches:
-      - master
-
+      - release
 jobs:
   release-on-push:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - name: Tag/Release on Push Action
+        uses: rymndhng/release-on-push-action@v0.27.0
+        
       - uses: rymndhng/release-on-push-action@master
         with:
           bump_version_scheme: minor
