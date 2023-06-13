@@ -8,30 +8,14 @@ on:
 jobs:
   tag-release:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
+      
       - name: Tag Release
-        uses: actions/github-script@v4
+        uses: "s-bridges/tag-release-on-push-action@v1.0.2"
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const tag = 'v' + process.env.GITHUB_SHA.substring(0, 8);
-            const { octokit } = require('@octokit/core');
-            const MyOctokit = octokit.plugin(require('octokit-create-pull-request'));
-            const octokitWithPR = new MyOctokit({ auth: process.env.GITHUB_TOKEN });
-            const { data } = await octokitWithPR.request('POST /repos/{owner}/{repo}/git/tags', {
-              owner: process.env.GITHUB_REPOSITORY_OWNER,
-              repo: process.env.GITHUB_REPOSITORY,
-              tag: tag,
-              message: 'Release ' + tag,
-              object: process.env.GITHUB_SHA,
-              type: 'commit'
-            });
-            await octokitWithPR.request('POST /repos/{owner}/{repo}/git/refs', {
-              owner: process.env.GITHUB_REPOSITORY_OWNER,
-              repo: process.env.GITHUB_REPOSITORY,
-              ref: 'refs/tags/' + tag,
-              sha: data.sha
-            });
+          tag_prefix: "v"
+          release_name: "Release ${{ github.sha }}"
+          release_body: "Release ${{ github.sha }}"
